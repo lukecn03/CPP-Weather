@@ -112,7 +112,7 @@ namespace CLRNET {
 			// 
 			// button1
 			// 
-			this->button1->Location = System::Drawing::Point(202, 382);
+			this->button1->Location = System::Drawing::Point(115, 9);
 			this->button1->Name = L"button1";
 			this->button1->Size = System::Drawing::Size(75, 23);
 			this->button1->TabIndex = 1;
@@ -126,13 +126,13 @@ namespace CLRNET {
 			this->chart1->ChartAreas->Add(chartArea1);
 			legend1->Name = L"Legend1";
 			this->chart1->Legends->Add(legend1);
-			this->chart1->Location = System::Drawing::Point(12, 25);
+			this->chart1->Location = System::Drawing::Point(15, 49);
 			this->chart1->Name = L"chart1";
 			series1->ChartArea = L"ChartArea1";
 			series1->Legend = L"Legend1";
 			series1->Name = L"Series1";
 			this->chart1->Series->Add(series1);
-			this->chart1->Size = System::Drawing::Size(474, 330);
+			this->chart1->Size = System::Drawing::Size(1433, 642);
 			this->chart1->TabIndex = 2;
 			this->chart1->Text = L"chart1";
 			// 
@@ -140,7 +140,7 @@ namespace CLRNET {
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(498, 412);
+			this->ClientSize = System::Drawing::Size(1460, 714);
 			this->Controls->Add(this->chart1);
 			this->Controls->Add(this->button1);
 			this->Controls->Add(this->label1);
@@ -227,6 +227,9 @@ namespace CLRNET {
 			System::String^ result = gcnew System::String(str.c_str());
 			label1->Text = result;
 
+			chart1->Titles->Clear();
+			chart1->Titles->Add("Temperature Forecast");
+
 			// Now httpData contains the output JSON. You can parse it with JsonCpp:
 			Json::Value jsonData;
 			Json::Reader jsonReader;
@@ -244,17 +247,65 @@ namespace CLRNET {
 				// Assuming 'chart1' is a System::Windows::Forms::DataVisualization::Charting::Chart
 				chart1->Series->Clear(); // Clear existing data
 
+				//// Add a series for temperature data
+				//System::Windows::Forms::DataVisualization::Charting::Series^ temperatureSeries = gcnew System::Windows::Forms::DataVisualization::Charting::Series("Temperature");
+				//temperatureSeries->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Line;
+
+				//for (int i = 0; i < timeData.size(); ++i) {
+				//	// Extract time and temperature for each data point
+				//	System::DateTime^ dateTime = System::DateTime::Parse(gcnew System::String(timeData[i].asCString()));
+				//	double temperature = temperatureData[i].asDouble();
+
+				//	// Add the data point to the series
+				//	temperatureSeries->Points->AddXY(dateTime, temperature);
+				//}
+
+				//// Add the temperature series to the chart
+				//chart1->Series->Add(temperatureSeries);
+
 				// Add a series for temperature data
 				System::Windows::Forms::DataVisualization::Charting::Series^ temperatureSeries = gcnew System::Windows::Forms::DataVisualization::Charting::Series("Temperature");
 				temperatureSeries->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Line;
+
+				// Date for the previous data point to check for a new day
+				System::DateTime^ prevDate = nullptr;
 
 				for (int i = 0; i < timeData.size(); ++i) {
 					// Extract time and temperature for each data point
 					System::DateTime^ dateTime = System::DateTime::Parse(gcnew System::String(timeData[i].asCString()));
 					double temperature = temperatureData[i].asDouble();
 
-					// Add the data point to the series
-					temperatureSeries->Points->AddXY(dateTime, temperature);
+					// Check for a new day
+					if (!prevDate || prevDate->Day != dateTime->Day) {
+						//// Add a data point with bold day label
+						//// Add a data point
+						//temperatureSeries->Points->AddXY(dateTime, temperature);
+
+						//// Get the last added point
+						//int lastPointIndex = temperatureSeries->Points->Count - 1;
+						//System::Windows::Forms::DataVisualization::Charting::DataPoint^ dataPoint = temperatureSeries->Points[lastPointIndex];
+
+						//// Set the label and font of the data point
+						//dataPoint->Label = dateTime->ToString("MM/dd");
+						//dataPoint->Font = gcnew System::Drawing::Font("Arial", 8, System::Drawing::FontStyle::Bold);
+
+					}
+					else {
+						// Add the data point with sub-label
+						// Add a data point
+						temperatureSeries->Points->AddXY(dateTime, temperature);
+
+						// Get the last added point
+						int lastPointIndex = temperatureSeries->Points->Count - 1;
+						System::Windows::Forms::DataVisualization::Charting::DataPoint^ dataPoint = temperatureSeries->Points[lastPointIndex];
+
+						// Set the label and font of the data point
+						dataPoint->Label = dateTime->ToString("HH");
+						dataPoint->Font = gcnew System::Drawing::Font("Arial", 6, System::Drawing::FontStyle::Regular);
+					}
+
+					// Update the previous date
+					prevDate = dateTime;
 				}
 
 				// Add the temperature series to the chart
