@@ -184,7 +184,7 @@ namespace CLRNET {
 		//}
 
 
-		const std::string url("https://api.open-meteo.com/v1/forecast?latitude=-26.520453&longitude=29.193603&hourly=temperature_2m&start_date=2023-12-13&end_date=2023-12-14");
+		const std::string url("https://api.open-meteo.com/v1/forecast?latitude=-26.520453&longitude=29.193603&hourly=temperature_2m");
 
 		CURL* curl = curl_easy_init();
 
@@ -223,24 +223,53 @@ namespace CLRNET {
 
 		if (httpCode == 200)
 		{
-			label1->Text = "Got successful response from ";
+			std::string str = std::to_string(httpCode);
+			System::String^ result = gcnew System::String(str.c_str());
+			label1->Text = result;
+
+			// Now httpData contains the output JSON. You can parse it with JsonCpp:
+			Json::Value jsonData;
+			Json::Reader jsonReader;
+			if (jsonReader.parse(*httpData, jsonData)) {
+				// Successfully parsed JSON data
+
+				// Access latitude, longitude, and other information
+				double latitude = jsonData["latitude"].asDouble();
+				double longitude = jsonData["longitude"].asDouble();
+				// Access hourly temperature data
+				Json::Value hourlyData = jsonData["hourly"];
+				Json::Value timeData = hourlyData["time"];
+				Json::Value temperatureData = hourlyData["temperature_2m"];
+
+				// Assuming 'chart1' is a System::Windows::Forms::DataVisualization::Charting::Chart
+				chart1->Series->Clear(); // Clear existing data
+
+				// Add a series for temperature data
+				System::Windows::Forms::DataVisualization::Charting::Series^ temperatureSeries = gcnew System::Windows::Forms::DataVisualization::Charting::Series("Temperature");
+				temperatureSeries->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Line;
+
+				for (int i = 0; i < timeData.size(); ++i) {
+					// Extract time and temperature for each data point
+					System::DateTime^ dateTime = System::DateTime::Parse(gcnew System::String(timeData[i].asCString()));
+					double temperature = temperatureData[i].asDouble();
+
+					// Add the data point to the series
+					temperatureSeries->Points->AddXY(dateTime, temperature);
+				}
+
+				// Add the temperature series to the chart
+				chart1->Series->Add(temperatureSeries);
+
+				// Customize the chart appearance if needed
+				chart1->ChartAreas[0]->AxisX->Title = "Time";
+				chart1->ChartAreas[0]->AxisY->Title = "Temperature (°C)";
+				chart1->Legends->Clear(); // Remove legends if not needed
+			}
+			else {
+				// Failed to parse JSON
+			}
 		}
 
-		// Now readBuffer contains the output JSON. You can parse it with JsonCpp:
-		//Json::Value jsonData;
-		//Json::Reader jsonReader;
-		//if (jsonReader.parse(readBuffer, jsonData)) {
-		//	// Successfully parsed JSON data
-		//	// Now you can use jsonData to create your chart
-		//}
-		//else {
-		//	// Failed to parse JSON
-		//}
-
-		/*std::string str = std::to_string(http_code);
-		System::String^ result = gcnew System::String(str.c_str());
-		label1->Text = result;*/
-		
 	}
 	};
 }
