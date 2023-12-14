@@ -4,6 +4,9 @@
 #include <string>
 #include <cstring>
 #include <json/json.h>
+#include <msclr\marshal.h>
+
+
 
 namespace CLRNET {
 
@@ -42,41 +45,61 @@ namespace CLRNET {
 	private: System::Windows::Forms::Label^ label1;
 	protected:
 	private: System::Windows::Forms::Button^ button1;
+	private: System::Windows::Forms::TextBox^ textBox1;
+	private: System::Windows::Forms::Label^ label2;
+	private: System::Windows::Forms::Label^ label3;
 	private: System::Windows::Forms::DataVisualization::Charting::Chart^ chart1;
 
-	/*static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp)
-	{
-		((std::string*)userp)->append((char*)contents, size * nmemb);
-		return size * nmemb;
-	}*/
-
-	public: delegate size_t callbackDelegate(const char* in,std::size_t size,std::size_t num,std::string* out) ;
+	
+//WRITE CALLBACK
 	public: ref class Device {
-		public: static std::size_t callback(
-					const char* in,
-					std::size_t size,
-					std::size_t num,
-					std::string* out)
-			{
-				const std::size_t totalBytes(size * num);
-				out->append(in, totalBytes);
-				return totalBytes;
-			}
-
-			// Add a static member function to serve as the callback for libcurl
-		public: static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp)
-			{
-				return callback(static_cast<const char*>(contents), size, nmemb, static_cast<std::string*>(userp));
-			}
+	public:
+		static std::size_t callback(const char* in, std::size_t size, std::size_t num, std::string* out) {
+			const std::size_t totalBytes(size * num);
+			out->append(in, totalBytes);
+			return totalBytes;
+		}
 	};
 
 	public:
 		delegate size_t WriteCallbackDelegate(void* contents, size_t size, size_t nmemb, void* userp);
 
-		static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp)
-		{
-			return Device::callback(static_cast<const char*>(contents), size, nmemb, static_cast<std::string*>(userp));
+		static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
+			if (userp == nullptr) {
+				// Handle the case where userp is a null pointer
+				return 0;
+			}
+
+			std::string* out = static_cast<std::string*>(userp);
+			return Device::callback(static_cast<const char*>(contents), size, nmemb, out);
 		}
+
+// Perform an HTTP GET request given a URL.
+	public: CURL* PerformHttpGet(const std::string& url) {
+
+		CURL* curl = curl_easy_init();
+		if (curl) {
+			curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+
+			// Response information.
+			WriteCallbackDelegate^ writeCallbackDelegate = gcnew WriteCallbackDelegate(&WriteCallback);
+			curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallbackDelegate);
+
+			// Perform the HTTP GET request.
+			CURLcode res = curl_easy_perform(curl);
+			if (res != CURLE_OK) {
+				label1->Text = "Failed to perform HTTP GET request: ";
+			}
+
+			// Clean up.
+			curl_easy_cleanup(curl);
+		}
+		else {
+			label1->Text = "Failed to initialize libcurl.";
+		}
+
+		return curl;
+	}
 
 
 	private:
@@ -98,6 +121,9 @@ namespace CLRNET {
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->chart1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Chart());
+			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
+			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->label3 = (gcnew System::Windows::Forms::Label());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->BeginInit();
 			this->SuspendLayout();
 			// 
@@ -136,11 +162,39 @@ namespace CLRNET {
 			this->chart1->TabIndex = 2;
 			this->chart1->Text = L"chart1";
 			// 
+			// textBox1
+			// 
+			this->textBox1->Location = System::Drawing::Point(288, 12);
+			this->textBox1->Name = L"textBox1";
+			this->textBox1->Size = System::Drawing::Size(100, 20);
+			this->textBox1->TabIndex = 3;
+			// 
+			// label2
+			// 
+			this->label2->AutoSize = true;
+			this->label2->Location = System::Drawing::Point(465, 19);
+			this->label2->Name = L"label2";
+			this->label2->Size = System::Drawing::Size(35, 13);
+			this->label2->TabIndex = 4;
+			this->label2->Text = L"label2";
+			// 
+			// label3
+			// 
+			this->label3->AutoSize = true;
+			this->label3->Location = System::Drawing::Point(1291, 19);
+			this->label3->Name = L"label3";
+			this->label3->Size = System::Drawing::Size(35, 13);
+			this->label3->TabIndex = 5;
+			this->label3->Text = L"label3";
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(1460, 714);
+			this->Controls->Add(this->label3);
+			this->Controls->Add(this->label2);
+			this->Controls->Add(this->textBox1);
 			this->Controls->Add(this->chart1);
 			this->Controls->Add(this->button1);
 			this->Controls->Add(this->label1);
@@ -156,76 +210,95 @@ namespace CLRNET {
 	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
 	}
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
-	
-
-		//CURL* curl;
-		//CURLcode res;
-		//long http_code = 0;
-		//std::string readBuffer;
-
-		//curl = curl_easy_init();
-		//if (curl) {
-		//	curl_easy_setopt(curl, CURLOPT_URL, "https://api.open-meteo.com/v1/forecast?latitude=-26.520453&longitude=29.193603&hourly=temperature_2m&start_date=2023-12-13&end_date=2023-12-14");
-		//	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
-		//	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
-
-		//	/* Perform the request, res will get the return code */
-		//	res = curl_easy_perform(curl);
-		//	/* Check for errors */
-		//	if (res != CURLE_OK)
-		//		fprintf(stderr, "curl_easy_perform() failed: %s\n",
-		//			curl_easy_strerror(res));
-		//	else {
-		//		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
-		//	}
-
-		//	/* always cleanup */
-		//	curl_easy_cleanup(curl);
-		//}
 
 
-		const std::string url("https://api.open-meteo.com/v1/forecast?latitude=-26.520453&longitude=29.193603&hourly=temperature_2m");
+		/*std::wstring city;
+		System::String^ textBoxText = textBox1->Text;
+		city = msclr::interop::marshal_as<std::wstring>(textBoxText);
+		std::wstring apiUrl = L"https://api.opencagedata.com/geocode/v1/json?q=" + city + L"& key = 8bf3c14897c3437cb44326acc120f27d";*/
 
+		const std::string url("https://api.opencagedata.com/geocode/v1/json?q=Secunda&key=8bf3c14897c3437cb44326acc120f27d");
 		CURL* curl = curl_easy_init();
+		if (curl) {
+			std::string response;
 
+			curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+			WriteCallbackDelegate^ writeCallbackDelegate = gcnew WriteCallbackDelegate(&WriteCallback);
+			curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallbackDelegate);
+			curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+			CURLcode res = curl_easy_perform(curl);
+			if (res != CURLE_OK) {
+				//label1->Text = "Error: " + curl_easy_strerror(res);
+			}
+			else {
+				// Parse JSON response
+				Json::Value jsonValue;
+				Json::Reader jsonReader;
+				if (jsonReader.parse(response, jsonValue)) {
+					auto results = jsonValue["results"];
+					if (!results.empty()) {
+						auto location = results[0]["geometry"];
+						double latitude = location["lat"].asDouble();
+						double longitude = location["lng"].asDouble();
+						label2->Text = "Latitude: " + latitude + "Longitude: " + longitude;
+						label3->Text = gcnew System::String(jsonValue["rate"]["remaining"].asString().c_str()) + "/" +
+							gcnew System::String(jsonValue["rate"]["limit"].asString().c_str()) +
+							" Api limit remaining";
+
+					}
+					else {
+						label1->Text = L"No results found for the city: ";
+					}
+				}
+				else {
+					label1->Text = "Failed to parse JSON response.";
+				}
+			}
+			curl_easy_cleanup(curl);
+		}
+
+
+
+
+		const std::string urlWeather("https://api.open-meteo.com/v1/forecast?latitude=-26.520453&longitude=29.193603&hourly=temperature_2m");
+		CURL* curlWeather = curl_easy_init();
 		// Set remote URL.
-		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-
+		curl_easy_setopt(curlWeather, CURLOPT_URL, urlWeather.c_str());
 		// Don't bother trying IPv6, which would increase DNS resolution time.
-		curl_easy_setopt(curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-
+		curl_easy_setopt(curlWeather, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 		// Don't wait forever, time out after 10 seconds.
-		curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10);
-
+		curl_easy_setopt(curlWeather, CURLOPT_TIMEOUT, 10);
 		// Follow HTTP redirects if necessary.
-		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-
+		curl_easy_setopt(curlWeather, CURLOPT_FOLLOWLOCATION, 1L);
 		// Response information.
 		long httpCode(0);
 		std::unique_ptr<std::string> httpData(new std::string());
-
-
-
 		// Hook up data handling function.
 		WriteCallbackDelegate^ writeCallbackDelegate = gcnew WriteCallbackDelegate(&WriteCallback);
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallbackDelegate);
-
-
+		curl_easy_setopt(curlWeather, CURLOPT_WRITEFUNCTION, writeCallbackDelegate);
 		// Hook up data container (will be passed as the last parameter to the
 		// callback handling function).  Can be any pointer type, since it will
 		// internally be passed as a void pointer.
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, httpData.get());
-
+		curl_easy_setopt(curlWeather, CURLOPT_WRITEDATA, httpData.get());
 		// Run our HTTP GET command, capture the HTTP response code, and clean up.
-		curl_easy_perform(curl);
-		curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &httpCode);
-		curl_easy_cleanup(curl);
+		curl_easy_perform(curlWeather);
+		curl_easy_getinfo(curlWeather, CURLINFO_RESPONSE_CODE, &httpCode);
+		curl_easy_cleanup(curlWeather);
+
+		//CURL* Data = PerformHttpGet("https://api.open-meteo.com/v1/forecast?latitude=-26.520453&longitude=29.193603&hourly=temperature_2m&start_date=2023-12-13&end_date=2023-12-14");
+		/*std::unique_ptr<std::string> httpData(new std::string());
+		long httpCode(0);
+
+		curl_easy_getinfo(Data, CURLINFO_RESPONSE_CODE, &httpCode);
+		curl_easy_setopt(Data, CURLOPT_WRITEDATA, httpData.get());*/
+		
 
 		if (httpCode == 200)
 		{
-			std::string str = std::to_string(httpCode);
+			
+			/*std::string str = std::to_string(httpCode);
 			System::String^ result = gcnew System::String(str.c_str());
-			label1->Text = result;
+			label1->Text = result;*/
 
 			chart1->Titles->Clear();
 			chart1->Titles->Add("Temperature Forecast");
@@ -235,6 +308,13 @@ namespace CLRNET {
 			Json::Reader jsonReader;
 			if (jsonReader.parse(*httpData, jsonData)) {
 				// Successfully parsed JSON data
+				
+				// Assuming jsonData["timezone"] is a JSON value of type std::string
+				std::string timezone = jsonData["timezone"].asString();
+				// Convert std::string to System::String^
+				System::String^ timezoneString = gcnew System::String(timezone.c_str());
+				// Set the Text property of label1
+				label1->Text = timezoneString;
 
 				// Access latitude, longitude, and other information
 				double latitude = jsonData["latitude"].asDouble();
@@ -269,7 +349,6 @@ namespace CLRNET {
 
 				// Date for the previous data point to check for a new day
 				System::DateTime^ prevDate = nullptr;
-
 				for (int i = 0; i < timeData.size(); ++i) {
 					// Extract time and temperature for each data point
 					System::DateTime^ dateTime = System::DateTime::Parse(gcnew System::String(timeData[i].asCString()));
