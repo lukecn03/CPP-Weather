@@ -1,13 +1,5 @@
 #pragma once
 
-#include <curl/curl.h>
-#include <string>
-#include <cstring>
-#include <json/json.h>
-#include <msclr\marshal.h>
-
-
-
 namespace CLRNET {
 
 	using namespace System;
@@ -18,12 +10,12 @@ namespace CLRNET {
 	using namespace System::Drawing;
 
 	/// <summary>
-	/// Summary for MyForm
+	/// Summary for Temp
 	/// </summary>
-	public ref class MyForm : public System::Windows::Forms::Form
+	public ref class Temp : public System::Windows::Forms::Form
 	{
 	public:
-		MyForm(void)
+		Temp(void)
 		{
 			InitializeComponent();
 			//
@@ -35,109 +27,41 @@ namespace CLRNET {
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
-		~MyForm()
+		~Temp()
 		{
 			if (components)
 			{
 				delete components;
 			}
 		}
-	private: System::Windows::Forms::Label^ label1;
-	protected:
-	private: System::Windows::Forms::Button^ button1;
-	private: System::Windows::Forms::TextBox^ textBox1;
-	private: System::Windows::Forms::Label^ label2;
-	private: System::Windows::Forms::Label^ label3;
-	private: System::Windows::Forms::Panel^ SummaryPanel;
-
-
-	private: System::Windows::Forms::MenuStrip^ menuStrip1;
-	private: System::Windows::Forms::ToolStripMenuItem^ tempToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^ windToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^ precipitationToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^ visibilityToolStripMenuItem;
-	private: System::Windows::Forms::ToolStripMenuItem^ summaryToolStripMenuItem;
 	private: System::Windows::Forms::Panel^ panel1;
-	private: System::Windows::Forms::Label^ lblSummaryHeading;
-	private: System::Windows::Forms::Panel^ panel2;
-	private: System::Windows::Forms::Label^ label6;
-	private: System::Windows::Forms::Label^ label5;
-	private: System::Windows::Forms::Label^ label4;
-	private: System::Windows::Forms::Panel^ panel3;
-	private: System::Windows::Forms::Label^ label10;
-	private: System::Windows::Forms::Label^ label9;
-	private: System::Windows::Forms::Label^ label8;
-	private: System::Windows::Forms::Label^ label7;
-	private: System::Windows::Forms::Label^ label11;
-	private: System::Windows::Forms::Panel^ panel4;
-	private: System::Windows::Forms::Label^ label12;
-	private: System::Windows::Forms::Label^ label14;
-	private: System::Windows::Forms::Label^ label13;
+	protected:
+	private: System::Windows::Forms::Panel^ panel7;
+	private: System::Windows::Forms::Label^ label22;
+	private: System::Windows::Forms::Label^ label21;
 	private: System::Windows::Forms::Panel^ panel6;
+	private: System::Windows::Forms::Label^ label20;
+	private: System::Windows::Forms::Label^ label19;
 	private: System::Windows::Forms::Label^ label18;
 	private: System::Windows::Forms::Panel^ panel5;
 	private: System::Windows::Forms::Label^ label17;
 	private: System::Windows::Forms::Label^ label16;
 	private: System::Windows::Forms::Label^ label15;
-	private: System::Windows::Forms::Label^ label21;
-	private: System::Windows::Forms::Label^ label20;
-	private: System::Windows::Forms::Label^ label19;
-	private: System::Windows::Forms::Panel^ panel7;
-	private: System::Windows::Forms::Label^ label22;
-
-	private: System::Windows::Forms::DataVisualization::Charting::Chart^ chart1;
-
-	
-//WRITE CALLBACK
-	public: ref class Device {
-	public:
-		static std::size_t callback(const char* in, std::size_t size, std::size_t num, std::string* out) {
-			const std::size_t totalBytes(size * num);
-			out->append(in, totalBytes);
-			return totalBytes;
-		}
-	};
-
-	public:
-		delegate size_t WriteCallbackDelegate(void* contents, size_t size, size_t nmemb, void* userp);
-
-		static size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
-			if (userp == nullptr) {
-				// Handle the case where userp is a null pointer
-				return 0;
-			}
-
-			std::string* out = static_cast<std::string*>(userp);
-			return Device::callback(static_cast<const char*>(contents), size, nmemb, out);
-		}
-
-// Perform an HTTP GET request given a URL.
-	public: CURL* PerformHttpGet(const std::string& url) {
-
-		CURL* curl = curl_easy_init();
-		if (curl) {
-			curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-
-			// Response information.
-			WriteCallbackDelegate^ writeCallbackDelegate = gcnew WriteCallbackDelegate(&WriteCallback);
-			curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallbackDelegate);
-
-			// Perform the HTTP GET request.
-			CURLcode res = curl_easy_perform(curl);
-			if (res != CURLE_OK) {
-				label1->Text = "Failed to perform HTTP GET request: ";
-			}
-
-			// Clean up.
-			curl_easy_cleanup(curl);
-		}
-		else {
-			label1->Text = "Failed to initialize libcurl.";
-		}
-
-		return curl;
-	}
-
+	private: System::Windows::Forms::Panel^ panel4;
+	private: System::Windows::Forms::Label^ label14;
+	private: System::Windows::Forms::Label^ label13;
+	private: System::Windows::Forms::Label^ label12;
+	private: System::Windows::Forms::Panel^ panel3;
+	private: System::Windows::Forms::Label^ label10;
+	private: System::Windows::Forms::Label^ label9;
+	private: System::Windows::Forms::Label^ label8;
+	private: System::Windows::Forms::Label^ label7;
+	private: System::Windows::Forms::Panel^ panel2;
+	private: System::Windows::Forms::Label^ label11;
+	private: System::Windows::Forms::Label^ label6;
+	private: System::Windows::Forms::Label^ label5;
+	private: System::Windows::Forms::Label^ label4;
+	private: System::Windows::Forms::Label^ lblSummaryHeading;
 
 	private:
 		/// <summary>
@@ -152,16 +76,6 @@ namespace CLRNET {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			System::Windows::Forms::DataVisualization::Charting::ChartArea^ chartArea1 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
-			System::Windows::Forms::DataVisualization::Charting::Legend^ legend1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
-			System::Windows::Forms::DataVisualization::Charting::Series^ series1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
-			this->label1 = (gcnew System::Windows::Forms::Label());
-			this->button1 = (gcnew System::Windows::Forms::Button());
-			this->chart1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Chart());
-			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
-			this->label2 = (gcnew System::Windows::Forms::Label());
-			this->label3 = (gcnew System::Windows::Forms::Label());
-			this->SummaryPanel = (gcnew System::Windows::Forms::Panel());
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
 			this->panel7 = (gcnew System::Windows::Forms::Panel());
 			this->label22 = (gcnew System::Windows::Forms::Label());
@@ -189,14 +103,6 @@ namespace CLRNET {
 			this->label5 = (gcnew System::Windows::Forms::Label());
 			this->label4 = (gcnew System::Windows::Forms::Label());
 			this->lblSummaryHeading = (gcnew System::Windows::Forms::Label());
-			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
-			this->summaryToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->tempToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->windToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->precipitationToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			this->visibilityToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->BeginInit();
-			this->SummaryPanel->SuspendLayout();
 			this->panel1->SuspendLayout();
 			this->panel7->SuspendLayout();
 			this->panel6->SuspendLayout();
@@ -204,79 +110,7 @@ namespace CLRNET {
 			this->panel4->SuspendLayout();
 			this->panel3->SuspendLayout();
 			this->panel2->SuspendLayout();
-			this->menuStrip1->SuspendLayout();
 			this->SuspendLayout();
-			// 
-			// label1
-			// 
-			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(677, 9);
-			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(35, 13);
-			this->label1->TabIndex = 0;
-			this->label1->Text = L"label1";
-			// 
-			// button1
-			// 
-			this->button1->Location = System::Drawing::Point(718, 0);
-			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(75, 23);
-			this->button1->TabIndex = 1;
-			this->button1->Text = L"button1";
-			this->button1->UseVisualStyleBackColor = true;
-			this->button1->Click += gcnew System::EventHandler(this, &MyForm::button1_Click);
-			// 
-			// chart1
-			// 
-			chartArea1->Name = L"ChartArea1";
-			this->chart1->ChartAreas->Add(chartArea1);
-			this->chart1->Dock = System::Windows::Forms::DockStyle::Bottom;
-			legend1->Name = L"Legend1";
-			this->chart1->Legends->Add(legend1);
-			this->chart1->Location = System::Drawing::Point(0, 334);
-			this->chart1->Name = L"chart1";
-			series1->ChartArea = L"ChartArea1";
-			series1->Legend = L"Legend1";
-			series1->Name = L"Series1";
-			this->chart1->Series->Add(series1);
-			this->chart1->Size = System::Drawing::Size(997, 239);
-			this->chart1->TabIndex = 2;
-			this->chart1->Text = L"chart1";
-			// 
-			// textBox1
-			// 
-			this->textBox1->Location = System::Drawing::Point(529, 2);
-			this->textBox1->Name = L"textBox1";
-			this->textBox1->Size = System::Drawing::Size(100, 20);
-			this->textBox1->TabIndex = 3;
-			// 
-			// label2
-			// 
-			this->label2->AutoSize = true;
-			this->label2->Location = System::Drawing::Point(443, 5);
-			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(35, 13);
-			this->label2->TabIndex = 4;
-			this->label2->Text = L"label2";
-			// 
-			// label3
-			// 
-			this->label3->AutoSize = true;
-			this->label3->Location = System::Drawing::Point(931, 9);
-			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(35, 13);
-			this->label3->TabIndex = 6;
-			this->label3->Text = L"label3";
-			// 
-			// SummaryPanel
-			// 
-			this->SummaryPanel->Controls->Add(this->panel1);
-			this->SummaryPanel->Controls->Add(this->chart1);
-			this->SummaryPanel->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->SummaryPanel->Location = System::Drawing::Point(0, 24);
-			this->SummaryPanel->Name = L"SummaryPanel";
-			this->SummaryPanel->Size = System::Drawing::Size(997, 573);
-			this->SummaryPanel->TabIndex = 7;
 			// 
 			// panel1
 			// 
@@ -287,13 +121,12 @@ namespace CLRNET {
 			this->panel1->Controls->Add(this->panel3);
 			this->panel1->Controls->Add(this->panel2);
 			this->panel1->Controls->Add(this->lblSummaryHeading);
-			this->panel1->Dock = System::Windows::Forms::DockStyle::Fill;
 			this->panel1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->panel1->Location = System::Drawing::Point(0, 0);
+			this->panel1->Location = System::Drawing::Point(63, 84);
 			this->panel1->Name = L"panel1";
-			this->panel1->Size = System::Drawing::Size(997, 334);
-			this->panel1->TabIndex = 3;
+			this->panel1->Size = System::Drawing::Size(997, 345);
+			this->panel1->TabIndex = 4;
 			// 
 			// panel7
 			// 
@@ -583,70 +416,14 @@ namespace CLRNET {
 			this->lblSummaryHeading->TabIndex = 0;
 			this->lblSummaryHeading->Text = L"Today\'s Weather";
 			// 
-			// menuStrip1
-			// 
-			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(5) {
-				this->summaryToolStripMenuItem,
-					this->tempToolStripMenuItem, this->windToolStripMenuItem, this->precipitationToolStripMenuItem, this->visibilityToolStripMenuItem
-			});
-			this->menuStrip1->Location = System::Drawing::Point(0, 0);
-			this->menuStrip1->Name = L"menuStrip1";
-			this->menuStrip1->Size = System::Drawing::Size(997, 24);
-			this->menuStrip1->TabIndex = 8;
-			this->menuStrip1->Text = L"menuStrip1";
-			// 
-			// summaryToolStripMenuItem
-			// 
-			this->summaryToolStripMenuItem->Name = L"summaryToolStripMenuItem";
-			this->summaryToolStripMenuItem->Size = System::Drawing::Size(70, 20);
-			this->summaryToolStripMenuItem->Text = L"Summary";
-			this->summaryToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::summaryToolStripMenuItem_Click);
-			// 
-			// tempToolStripMenuItem
-			// 
-			this->tempToolStripMenuItem->Name = L"tempToolStripMenuItem";
-			this->tempToolStripMenuItem->Size = System::Drawing::Size(85, 20);
-			this->tempToolStripMenuItem->Text = L"Temperature";
-			this->tempToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::tempToolStripMenuItem_Click);
-			// 
-			// windToolStripMenuItem
-			// 
-			this->windToolStripMenuItem->Name = L"windToolStripMenuItem";
-			this->windToolStripMenuItem->Size = System::Drawing::Size(47, 20);
-			this->windToolStripMenuItem->Text = L"Wind";
-			this->windToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::windToolStripMenuItem_Click);
-			// 
-			// precipitationToolStripMenuItem
-			// 
-			this->precipitationToolStripMenuItem->Name = L"precipitationToolStripMenuItem";
-			this->precipitationToolStripMenuItem->Size = System::Drawing::Size(86, 20);
-			this->precipitationToolStripMenuItem->Text = L"Precipitation";
-			// 
-			// visibilityToolStripMenuItem
-			// 
-			this->visibilityToolStripMenuItem->Name = L"visibilityToolStripMenuItem";
-			this->visibilityToolStripMenuItem->Size = System::Drawing::Size(63, 20);
-			this->visibilityToolStripMenuItem->Text = L"Visibility";
-			// 
-			// MyForm
+			// Temp
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(997, 597);
-			this->Controls->Add(this->SummaryPanel);
-			this->Controls->Add(this->label2);
-			this->Controls->Add(this->textBox1);
-			this->Controls->Add(this->label1);
-			this->Controls->Add(this->label3);
-			this->Controls->Add(this->button1);
-			this->Controls->Add(this->menuStrip1);
-			this->MainMenuStrip = this->menuStrip1;
-			this->MaximumSize = System::Drawing::Size(1013, 636);
-			this->MinimumSize = System::Drawing::Size(1013, 636);
-			this->Name = L"MyForm";
-			this->Text = L"Luke\'s Weather";
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->EndInit();
-			this->SummaryPanel->ResumeLayout(false);
+			this->ClientSize = System::Drawing::Size(1106, 612);
+			this->Controls->Add(this->panel1);
+			this->Name = L"Temp";
+			this->Text = L"Temp";
 			this->panel1->ResumeLayout(false);
 			this->panel1->PerformLayout();
 			this->panel7->ResumeLayout(false);
@@ -661,113 +438,9 @@ namespace CLRNET {
 			this->panel3->PerformLayout();
 			this->panel2->ResumeLayout(false);
 			this->panel2->PerformLayout();
-			this->menuStrip1->ResumeLayout(false);
-			this->menuStrip1->PerformLayout();
 			this->ResumeLayout(false);
-			this->PerformLayout();
 
 		}
 #pragma endregion
-
-
-	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
-
-
-		const std::string urlWeather("https://api.open-meteo.com/v1/forecast?latitude=-26.520453&longitude=29.193603&minutely_15=temperature_2m");
-		CURL* curlWeather = curl_easy_init();
-		// Set remote URL.
-		curl_easy_setopt(curlWeather, CURLOPT_URL, urlWeather.c_str());
-		// Don't bother trying IPv6, which would increase DNS resolution time.
-		curl_easy_setopt(curlWeather, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-		// Don't wait forever, time out after 10 seconds.
-		curl_easy_setopt(curlWeather, CURLOPT_TIMEOUT, 10);
-		// Follow HTTP redirects if necessary.
-		curl_easy_setopt(curlWeather, CURLOPT_FOLLOWLOCATION, 1L);
-		// Response information.
-		long httpCode(0);
-		std::unique_ptr<std::string> httpData(new std::string());
-		// Hook up data handling function.
-		WriteCallbackDelegate^ writeCallbackDelegate = gcnew WriteCallbackDelegate(&WriteCallback);
-		curl_easy_setopt(curlWeather, CURLOPT_WRITEFUNCTION, writeCallbackDelegate);
-		// Hook up data container (will be passed as the last parameter to the
-		// callback handling function).  Can be any pointer type, since it will
-		// internally be passed as a void pointer.
-		curl_easy_setopt(curlWeather, CURLOPT_WRITEDATA, httpData.get());
-		// Run our HTTP GET command, capture the HTTP response code, and clean up.
-		curl_easy_perform(curlWeather);
-		curl_easy_getinfo(curlWeather, CURLINFO_RESPONSE_CODE, &httpCode);
-		curl_easy_cleanup(curlWeather);
-
-		//CURL* Data = PerformHttpGet("https://api.open-meteo.com/v1/forecast?latitude=-26.520453&longitude=29.193603&hourly=temperature_2m&start_date=2023-12-13&end_date=2023-12-14");
-		/*std::unique_ptr<std::string> httpData(new std::string());
-		long httpCode(0);
-
-		curl_easy_getinfo(Data, CURLINFO_RESPONSE_CODE, &httpCode);
-		curl_easy_setopt(Data, CURLOPT_WRITEDATA, httpData.get());*/
-
-
-		if (httpCode == 200)
-		{
-
-			// Assuming you have a DateTimePicker control named dateTimePicker1 to select the date
-			
-			Json::Reader jsonReader;
-			Json::Value jsonData;
-			// Parse JSON response
-			if (jsonReader.parse(*httpData, jsonData)) {
-				auto hourlyData = jsonData["minutely_15"];
-				auto timeData = hourlyData["time"];
-				auto temperatureData = hourlyData["temperature_2m"];
-
-				// Assuming 'chart1' is a System::Windows::Forms::DataVisualization::Charting::Chart
-				chart1->Series->Clear(); // Clear existing data
-
-				// Add a series for temperature data
-				System::Windows::Forms::DataVisualization::Charting::Series^ temperatureSeries = gcnew System::Windows::Forms::DataVisualization::Charting::Series("Temperature");
-				temperatureSeries->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Line;
-
-				// Get the date of the first data point
-				System::DateTime^ firstDate = System::DateTime::Parse(gcnew System::String(timeData[0].asCString()));
-				firstDate = firstDate->Date;  // Extract the date component
-
-				// Iterate through the data and add points for each 15 minutes on the first day
-				for (int i = 0; i < timeData.size(); ++i) {
-					// Extract time and temperature for each data point
-					System::DateTime^ dateTime = System::DateTime::Parse(gcnew System::String(timeData[i].asCString()));
-					double temperature = temperatureData[i].asDouble();
-					double time = dateTime->TimeOfDay.TotalHours;
-
-					// Check if the date is the same as the first day
-					if (dateTime->Year == firstDate->Year &&
-						dateTime->Month == firstDate->Month &&
-						dateTime->Day == firstDate->Day) {
-						// Add the data point to the series
-						temperatureSeries->Points->AddXY(time, temperature);
-					}
-				}
-
-				// Add the temperature series to the chart
-				chart1->Series->Add(temperatureSeries);
-
-				// Customize the chart appearance if needed
-				chart1->ChartAreas[0]->AxisX->Title = "Time";
-				chart1->ChartAreas[0]->AxisY->Title = "Temperature (°C)";
-				chart1->Legends->Clear(); // Remove legends if not needed
-			}
-
-		}
-
-		
-
-	}
-	private: System::Void windToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
-		SummaryPanel->Visible = false;
-	}
-	private: System::Void tempToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
-		SummaryPanel->Visible = false;
-	}
-	private: System::Void summaryToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
-		SummaryPanel->Visible = true;
-	}
-};
+	};
 }
