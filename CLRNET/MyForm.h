@@ -740,7 +740,7 @@ namespace CLRNET {
 					// Check if the date is the same as the first day
 					if (dateTime->Year == firstDate->Year &&
 						dateTime->Month == firstDate->Month &&
-						dateTime->Day == firstDate->Day) {
+						dateTime->Day == firstDate->Day && time>=0.0) {
 						// Add the data point to the series
 						temperatureSeries->Points->AddXY(time, temperature);
 					}
