@@ -6,6 +6,7 @@
 #include <json/json.h>
 //#include <msclr\marshal.h>
 #include <map>
+#include <iostream>
 
 
 
@@ -21,9 +22,9 @@ namespace CLRNET {
 
 //Global variables
 	struct Globals {
-		std::string city = "Secunda";
-		std::string latitude = "-26.520453";
-		std::string longitude = "29.193603";
+		std::string city;
+		std::string latitude;
+		std::string longitude;
 	};
 
 	/// <summary>
@@ -37,8 +38,11 @@ namespace CLRNET {
 
 		MyForm(void)
 		{
+			global = new Globals();
+			global->city = "Secunda";
+			global->latitude = "-26.520453";
+			global->longitude = "29.193603";
 			InitializeComponent();
-			Globals* global = new Globals();
 			//
 			//TODO: Add the constructor code here
 			//
@@ -54,14 +58,14 @@ namespace CLRNET {
 			{
 				delete components;
 			}
-			delete global;
-		}
-	private: System::Windows::Forms::Label^ label1;
-	protected:
-	private: System::Windows::Forms::Button^ button1;
-	private: System::Windows::Forms::TextBox^ textBox1;
-	private: System::Windows::Forms::Label^ label2;
-	private: System::Windows::Forms::Label^ label3;
+			/*if (global!=nullptr)
+				delete global;*/
+		}	
+
+
+
+
+
 	private: System::Windows::Forms::Panel^ SummaryPanel;
 
 
@@ -112,6 +116,10 @@ namespace CLRNET {
 	private: System::Windows::Forms::Label^ label25;
 	private: System::Windows::Forms::TextBox^ textBox2;
 	private: System::Windows::Forms::Label^ label35;
+	private: System::Windows::Forms::Label^ label1;
+	private: System::Windows::Forms::Label^ label36;
+	private: System::Windows::Forms::Label^ label3;
+	private: System::Windows::Forms::Label^ label2;
 
 	private: System::Windows::Forms::DataVisualization::Charting::Chart^ chart1;
 
@@ -140,31 +148,31 @@ namespace CLRNET {
 		}
 
 // Perform an HTTP GET request given a URL.
-	public: CURL* PerformHttpGet(const std::string& url) {
+	//public: CURL* PerformHttpGet(const std::string& url) {
 
-		CURL* curl = curl_easy_init();
-		if (curl) {
-			curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+	//	CURL* curl = curl_easy_init();
+	//	if (curl) {
+	//		curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 
-			// Response information.
-			WriteCallbackDelegate^ writeCallbackDelegate = gcnew WriteCallbackDelegate(&WriteCallback);
-			curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallbackDelegate);
+	//		// Response information.
+	//		WriteCallbackDelegate^ writeCallbackDelegate = gcnew WriteCallbackDelegate(&WriteCallback);
+	//		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallbackDelegate);
 
-			// Perform the HTTP GET request.
-			CURLcode res = curl_easy_perform(curl);
-			if (res != CURLE_OK) {
-				label1->Text = "Failed to perform HTTP GET request: ";
-			}
+	//		// Perform the HTTP GET request.
+	//		CURLcode res = curl_easy_perform(curl);
+	//		if (res != CURLE_OK) {
+	//			label1->Text = "Failed to perform HTTP GET request: ";
+	//		}
 
-			// Clean up.
-			curl_easy_cleanup(curl);
-		}
-		else {
-			label1->Text = "Failed to initialize libcurl.";
-		}
+	//		// Clean up.
+	//		curl_easy_cleanup(curl);
+	//	}
+	//	else {
+	//		label1->Text = "Failed to initialize libcurl.";
+	//	}
 
-		return curl;
-	}
+	//	return curl;
+	//}
 // Converts from string to String^ and formats numbers to 1 decimal place
 	public: System::String^ ConvertString(const std::string& str) {
 		try {
@@ -183,12 +191,23 @@ namespace CLRNET {
 			return gcnew System::String(str.c_str());
 		}
 	}
-////Converts from String^ to string
-//	public: std::string ConvertString(System::String^ str) {
-//		// Convert the System::String^ to a std::string
-//		msclr::interop::marshal_context context;
-//		return context.marshal_as<std::string>(str);
-//	}
+//Converts from String^ to string
+	public: std::string ConvertString(System::String^ clrString) {
+		std::string stdString;
+
+		// Convert System::String^ to const char*
+		IntPtr ptr = System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(clrString);
+		const char* cString = static_cast<const char*>(ptr.ToPointer());
+
+		// Convert const char* to std::string
+		stdString = cString;
+
+		// Free the memory
+		System::Runtime::InteropServices::Marshal::FreeHGlobal(ptr);
+
+		return stdString;
+	}
+
 //Extracts Time from DateTime JSON
 	public: System::String^ GetTimeFromTimestamp(const std::string& timestamp) {
 		// Extract the last 5 characters from the timestamp
@@ -297,6 +316,23 @@ namespace CLRNET {
 			return nullptr;
 		}
 	}
+	public: std::string url_encode(const std::string& decoded)
+	{
+		 const auto encoded_value = curl_easy_escape(nullptr, decoded.c_str(), static_cast<int>(decoded.length()));
+		 std::string result(encoded_value);
+		 curl_free(encoded_value);
+		 return result;
+	}
+
+	public: std::string url_decode(const std::string& encoded)
+	{
+		 int output_length;
+		 const auto decoded_value = curl_easy_unescape(nullptr, encoded.c_str(), static_cast<int>(encoded.length()), &output_length);
+		 std::string result(decoded_value, output_length);
+		 curl_free(decoded_value);
+		 return result;
+	}
+
 
 
 
@@ -317,15 +353,12 @@ namespace CLRNET {
 			System::Windows::Forms::DataVisualization::Charting::Legend^ legend1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
 			System::Windows::Forms::DataVisualization::Charting::Series^ series1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
 			this->label1 = (gcnew System::Windows::Forms::Label());
-			this->button1 = (gcnew System::Windows::Forms::Button());
 			this->chart1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Chart());
-			this->textBox1 = (gcnew System::Windows::Forms::TextBox());
-			this->label2 = (gcnew System::Windows::Forms::Label());
-			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->SummaryPanel = (gcnew System::Windows::Forms::Panel());
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
 			this->label22 = (gcnew System::Windows::Forms::Label());
 			this->panel7 = (gcnew System::Windows::Forms::Panel());
+			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->label21 = (gcnew System::Windows::Forms::Label());
 			this->panel6 = (gcnew System::Windows::Forms::Panel());
 			this->label34 = (gcnew System::Windows::Forms::Label());
@@ -370,6 +403,8 @@ namespace CLRNET {
 			this->visibilityToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
 			this->label35 = (gcnew System::Windows::Forms::Label());
+			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->label36 = (gcnew System::Windows::Forms::Label());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->BeginInit();
 			this->SummaryPanel->SuspendLayout();
 			this->panel1->SuspendLayout();
@@ -385,21 +420,11 @@ namespace CLRNET {
 			// label1
 			// 
 			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(17, 26);
+			this->label1->Location = System::Drawing::Point(925, 3);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(57, 20);
+			this->label1->Size = System::Drawing::Size(35, 13);
 			this->label1->TabIndex = 0;
 			this->label1->Text = L"label1";
-			// 
-			// button1
-			// 
-			this->button1->Location = System::Drawing::Point(734, 8);
-			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(75, 23);
-			this->button1->TabIndex = 1;
-			this->button1->Text = L"button1";
-			this->button1->UseVisualStyleBackColor = true;
-			this->button1->Click += gcnew System::EventHandler(this, &MyForm::button1_Click);
 			// 
 			// chart1
 			// 
@@ -418,31 +443,6 @@ namespace CLRNET {
 			this->chart1->TabIndex = 2;
 			this->chart1->Text = L"chart1";
 			// 
-			// textBox1
-			// 
-			this->textBox1->Location = System::Drawing::Point(420, 0);
-			this->textBox1->Name = L"textBox1";
-			this->textBox1->Size = System::Drawing::Size(100, 20);
-			this->textBox1->TabIndex = 3;
-			// 
-			// label2
-			// 
-			this->label2->AutoSize = true;
-			this->label2->Location = System::Drawing::Point(444, 13);
-			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(57, 20);
-			this->label2->TabIndex = 4;
-			this->label2->Text = L"label2";
-			// 
-			// label3
-			// 
-			this->label3->AutoSize = true;
-			this->label3->Location = System::Drawing::Point(931, 13);
-			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(57, 20);
-			this->label3->TabIndex = 6;
-			this->label3->Text = L"label3";
-			// 
 			// SummaryPanel
 			// 
 			this->SummaryPanel->Controls->Add(this->panel1);
@@ -456,14 +456,10 @@ namespace CLRNET {
 			// panel1
 			// 
 			this->panel1->Controls->Add(this->label22);
-			this->panel1->Controls->Add(this->label3);
-			this->panel1->Controls->Add(this->label2);
 			this->panel1->Controls->Add(this->panel7);
 			this->panel1->Controls->Add(this->panel6);
-			this->panel1->Controls->Add(this->label1);
 			this->panel1->Controls->Add(this->panel5);
 			this->panel1->Controls->Add(this->panel4);
-			this->panel1->Controls->Add(this->button1);
 			this->panel1->Controls->Add(this->panel3);
 			this->panel1->Controls->Add(this->panel2);
 			this->panel1->Controls->Add(this->lblSummaryHeading);
@@ -488,11 +484,21 @@ namespace CLRNET {
 			// panel7
 			// 
 			this->panel7->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->panel7->Controls->Add(this->label3);
 			this->panel7->Controls->Add(this->label21);
 			this->panel7->Location = System::Drawing::Point(21, 43);
 			this->panel7->Name = L"panel7";
 			this->panel7->Size = System::Drawing::Size(372, 144);
 			this->panel7->TabIndex = 7;
+			// 
+			// label3
+			// 
+			this->label3->AutoSize = true;
+			this->label3->Location = System::Drawing::Point(3, 17);
+			this->label3->Name = L"label3";
+			this->label3->Size = System::Drawing::Size(57, 20);
+			this->label3->TabIndex = 8;
+			this->label3->Text = L"label3";
 			// 
 			// label21
 			// 
@@ -952,31 +958,52 @@ namespace CLRNET {
 			// 
 			// textBox2
 			// 
-			this->textBox2->Location = System::Drawing::Point(809, 4);
+			this->textBox2->Location = System::Drawing::Point(799, 4);
 			this->textBox2->Name = L"textBox2";
 			this->textBox2->Size = System::Drawing::Size(100, 20);
 			this->textBox2->TabIndex = 9;
-			this->textBox2->Leave += gcnew System::EventHandler(this, &MyForm::textBox2_Leave);
+			this->textBox2->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MyForm::textBox2_KeyPress);
 			// 
 			// label35
 			// 
 			this->label35->AutoSize = true;
-			this->label35->Location = System::Drawing::Point(685, 8);
+			this->label35->Location = System::Drawing::Point(675, 7);
 			this->label35->Name = L"label35";
 			this->label35->Size = System::Drawing::Size(118, 13);
 			this->label35->TabIndex = 10;
 			this->label35->Text = L"Please Enter City Name";
+			// 
+			// label2
+			// 
+			this->label2->AutoSize = true;
+			this->label2->Location = System::Drawing::Point(905, 7);
+			this->label2->Name = L"label2";
+			this->label2->Size = System::Drawing::Size(35, 13);
+			this->label2->TabIndex = 11;
+			this->label2->Text = L"label2";
+			// 
+			// label36
+			// 
+			this->label36->AutoSize = true;
+			this->label36->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 5.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label36->Location = System::Drawing::Point(969, 0);
+			this->label36->Name = L"label36";
+			this->label36->Size = System::Drawing::Size(0, 7);
+			this->label36->TabIndex = 12;
 			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(997, 597);
+			this->Controls->Add(this->label36);
+			this->Controls->Add(this->label2);
 			this->Controls->Add(this->label35);
 			this->Controls->Add(this->textBox2);
 			this->Controls->Add(this->SummaryPanel);
 			this->Controls->Add(this->menuStrip1);
-			this->Controls->Add(this->textBox1);
+			this->Controls->Add(this->label1);
 			this->MainMenuStrip = this->menuStrip1;
 			this->MaximumSize = System::Drawing::Size(1013, 636);
 			this->MinimumSize = System::Drawing::Size(1013, 636);
@@ -1006,97 +1033,109 @@ namespace CLRNET {
 
 		}
 #pragma endregion
+	private: void updateSummaryPage() {
+
+		std::string urlDaily = "https://api.open-meteo.com/v1/forecast?latitude=" + url_encode(global->latitude) + "&longitude=" + url_encode(global->longitude) + "&daily=sunshine_duration&daily=sunrise&daily=sunset&daily=wind_speed_10m_max&daily=wind_gusts_10m_max&daily=wind_direction_10m_dominant&daily=uv_index_max&daily=uv_index_clear_sky_max&daily=precipitation_sum&daily=precipitation_probability_mean&daily=temperature_2m_min&daily=temperature_2m_max&daily=weather_code";
+		//textBox2->Text = ConvertString(urlDaily.c_str());
+
+		CURL* curl = curl_easy_init();
+		if (curl) {
+			std::string response;
+
+			curl_easy_setopt(curl, CURLOPT_URL, urlDaily.c_str());
+			WriteCallbackDelegate^ writeCallbackDelegate = gcnew WriteCallbackDelegate(&WriteCallback);
+			curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallbackDelegate);
+			curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+			CURLcode res = curl_easy_perform(curl);
+			if (res != CURLE_OK) {
+				//label1->Text = "Error: " + curl_easy_strerror(res);
+			}
+			else {
+				// Parse JSON response
+				Json::Value jsonValue;
+				Json::Reader jsonReader;
+				if (jsonReader.parse(response, jsonValue)) {
+					auto results = jsonValue["daily"];
+					label22->Text = ConvertString(results["time"][0].asString()); //Displays the date
+					label23->Text = ConvertString(results["precipitation_sum"][0].asString()) + " mm"; //Displays the precipitation sum
+					label24->Text = ConvertString(results["precipitation_probability_mean"][0].asString()) + " %"; //Displays the precipitation probability
+
+					label34->Text = ConvertString(results["temperature_2m_min"][0].asString()) + " °C"; //Displays the min temp
+					label33->Text = ConvertString(results["temperature_2m_max"][0].asString()) + " °C";//Displays the max temp
+
+					label32->Text = ConvertString(results["uv_index_clear_sky_max"][0].asString()); //Displays the clear sky max
+					label31->Text = ConvertString(results["uv_index_max"][0].asString()); //Displays the max uv index
+
+					label30->Text = ConvertString(results["wind_gusts_10m_max"][0].asString()) + " km/h"; //Displays the wind gusts
+					label29->Text = ConvertString(results["wind_speed_10m_max"][0].asString()) + " km/h"; //Displays the wind speed
+					label28->Text = GetWindDirection(results["wind_direction_10m_dominant"][0].asString()); //Displays the wind direction
+
+					label27->Text = GetTimeFromTimestamp(results["sunset"][0].asString()); //Displays the sunset
+					label25->Text = GetTimeFromTimestamp(results["sunrise"][0].asString()); //Displays the sunrise
+					label26->Text = ConvertSecondsToHours(results["sunshine_duration"][0].asString()) + " hours"; //Displays the sunshine duration	
+
+					label21->Text = GetWeatherDescription(results["weather_code"][0].asString()); //Displays the weather code
+				}
+				else {
+					label1->Text = "Failed to parse JSON response.";
+				}
+			}
+			curl_easy_cleanup(curl);
+		}
+		// Populating the Graph on Summary Page
+		const std::string urlGraph("https://api.open-meteo.com/v1/forecast?latitude=" + url_encode(global->latitude) + "&longitude=" + url_encode(global->longitude) + "&minutely_15=temperature_2m");
+		curl = curl_easy_init();
+		if (curl) {
+			std::string response;
+			curl_easy_setopt(curl, CURLOPT_URL, urlGraph.c_str());
+			WriteCallbackDelegate^ writeCallbackDelegate = gcnew WriteCallbackDelegate(&WriteCallback);
+			curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallbackDelegate);
+			curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+			CURLcode res = curl_easy_perform(curl);
+			if (res != CURLE_OK) {
+				//label1->Text = "Error: " + curl_easy_strerror(res);
+			}
+			else {
+				// Parse JSON response
+				Json::Value jsonValue;
+				Json::Reader jsonReader;
+				if (jsonReader.parse(response, jsonValue)) {
+					auto results = jsonValue["minutely_15"];
+					auto timeData = results["time"];
+					timeData.resize(96);
+					auto temperatureData = results["temperature_2m"];
+					temperatureData.resize(96);
+					// Assuming 'chart1' is a System::Windows::Forms::DataVisualization::Charting::Chart
+					chart1->Series->Clear(); // Clear existing data
+
+					// Add a series for temperature data
+					System::Windows::Forms::DataVisualization::Charting::Series^ temperatureSeries = gcnew System::Windows::Forms::DataVisualization::Charting::Series("Temperature");
+					temperatureSeries->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Line;
+
+					for (int i = 0; i < timeData.size(); ++i) {
+						// Extract time and temperature for each data point
+						System::String^ timeStr = GetTimeFromTimestamp(timeData[i].asString());
+						double temperature = temperatureData[i].asDouble();
+
+						// Add the data point to the chart
+						temperatureSeries->Points->AddXY(timeStr, temperature);
+					}
+
+					// Add the temperature series to the chart
+					chart1->Series->Add(temperatureSeries);
+
+					// Customize the chart appearance if needed
+					chart1->ChartAreas[0]->AxisX->Title = "Time";
+					chart1->ChartAreas[0]->AxisY->Title = "Temperature (°C)";
+					chart1->Legends->Clear(); // Remove legends if not needed
 
 
-	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
-
-
-		//const std::string urlWeather("https://api.open-meteo.com/v1/forecast?latitude=-26.520453&longitude=29.193603&minutely_15=temperature_2m");
-		//CURL* curlWeather = curl_easy_init();
-		//// Set remote URL.
-		//curl_easy_setopt(curlWeather, CURLOPT_URL, urlWeather.c_str());
-		//// Don't bother trying IPv6, which would increase DNS resolution time.
-		//curl_easy_setopt(curlWeather, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-		//// Don't wait forever, time out after 10 seconds.
-		//curl_easy_setopt(curlWeather, CURLOPT_TIMEOUT, 10);
-		//// Follow HTTP redirects if necessary.
-		//curl_easy_setopt(curlWeather, CURLOPT_FOLLOWLOCATION, 1L);
-		//// Response information.
-		//long httpCode(0);
-		//std::unique_ptr<std::string> httpData(new std::string());
-		//// Hook up data handling function.
-		//WriteCallbackDelegate^ writeCallbackDelegate = gcnew WriteCallbackDelegate(&WriteCallback);
-		//curl_easy_setopt(curlWeather, CURLOPT_WRITEFUNCTION, writeCallbackDelegate);
-		//// Hook up data container (will be passed as the last parameter to the
-		//// callback handling function).  Can be any pointer type, since it will
-		//// internally be passed as a void pointer.
-		//curl_easy_setopt(curlWeather, CURLOPT_WRITEDATA, httpData.get());
-		//// Run our HTTP GET command, capture the HTTP response code, and clean up.
-		//curl_easy_perform(curlWeather);
-		//curl_easy_getinfo(curlWeather, CURLINFO_RESPONSE_CODE, &httpCode);
-		//curl_easy_cleanup(curlWeather);
-
-		////CURL* Data = PerformHttpGet("https://api.open-meteo.com/v1/forecast?latitude=-26.520453&longitude=29.193603&hourly=temperature_2m&start_date=2023-12-13&end_date=2023-12-14");
-		///*std::unique_ptr<std::string> httpData(new std::string());
-		//long httpCode(0);
-
-		//curl_easy_getinfo(Data, CURLINFO_RESPONSE_CODE, &httpCode);
-		//curl_easy_setopt(Data, CURLOPT_WRITEDATA, httpData.get());*/
-
-
-		//if (httpCode == 200)
-		//{
-
-		//	// Assuming you have a DateTimePicker control named dateTimePicker1 to select the date
-		//	
-		//	Json::Reader jsonReader;
-		//	Json::Value jsonData;
-		//	// Parse JSON response
-		//	if (jsonReader.parse(*httpData, jsonData)) {
-		//		auto hourlyData = jsonData["minutely_15"];
-		//		auto timeData = hourlyData["time"];
-		//		auto temperatureData = hourlyData["temperature_2m"];
-
-		//		// Assuming 'chart1' is a System::Windows::Forms::DataVisualization::Charting::Chart
-		//		chart1->Series->Clear(); // Clear existing data
-
-		//		// Add a series for temperature data
-		//		System::Windows::Forms::DataVisualization::Charting::Series^ temperatureSeries = gcnew System::Windows::Forms::DataVisualization::Charting::Series("Temperature");
-		//		temperatureSeries->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Line;
-
-		//		// Get the date of the first data point
-		//		System::DateTime^ firstDate = System::DateTime::Parse(gcnew System::String(timeData[0].asCString()));
-		//		firstDate = firstDate->Date;  // Extract the date component
-
-		//		// Iterate through the data and add points for each 15 minutes on the first day
-		//		for (int i = 0; i < timeData.size(); ++i) {
-		//			// Extract time and temperature for each data point
-		//			System::DateTime^ dateTime = System::DateTime::Parse(gcnew System::String(timeData[i].asCString()));
-		//			double temperature = temperatureData[i].asDouble();
-		//			double time = dateTime->TimeOfDay.TotalHours;
-
-		//			// Check if the date is the same as the first day
-		//			if (dateTime->Year == firstDate->Year &&
-		//				dateTime->Month == firstDate->Month &&
-		//				dateTime->Day == firstDate->Day) {
-		//				// Add the data point to the series
-		//				temperatureSeries->Points->AddXY(time, temperature);
-		//			}
-		//		}
-
-		//		// Add the temperature series to the chart
-		//		chart1->Series->Add(temperatureSeries);
-
-		//		// Customize the chart appearance if needed
-		//		chart1->ChartAreas[0]->AxisX->Title = "Time";
-		//		chart1->ChartAreas[0]->AxisY->Title = "Temperature (°C)";
-		//		chart1->Legends->Clear(); // Remove legends if not needed
-		//	}
-
-		//}
-
-		
-
+				}
+				else {
+					//label1->Text = "Failed to parse JSON response.";
+				}
+			}
+		}
 	}
 	private: System::Void windToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
 		SummaryPanel->Visible = false;
@@ -1109,116 +1148,61 @@ namespace CLRNET {
 	}
 	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
 		
-	SummaryPanel->Visible = true;
-	// make other panels invisible
-		const std::string urlDaily("https://api.open-meteo.com/v1/forecast?latitude="+ global->latitude + "&longitude=" + global->longitude + "&daily=sunshine_duration&daily=sunrise&daily=sunset&daily=wind_speed_10m_max&daily=wind_gusts_10m_max&daily=wind_direction_10m_dominant&daily=uv_index_max&daily=uv_index_clear_sky_max&daily=precipitation_sum&daily=precipitation_probability_mean&daily=temperature_2m_min&daily=temperature_2m_max&daily=weather_code");
-		label1->Text = ConvertString(urlDaily);
-	//	CURL* curl = curl_easy_init();
-	//	if (curl) {
-	//		std::string response;
+		SummaryPanel->Visible = true;
+		// make other panels invisible
 
-	//		curl_easy_setopt(curl, CURLOPT_URL, urlDaily.c_str());
-	//		WriteCallbackDelegate^ writeCallbackDelegate = gcnew WriteCallbackDelegate(&WriteCallback);
-	//		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallbackDelegate);
-	//		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
-	//		CURLcode res = curl_easy_perform(curl);
-	//		if (res != CURLE_OK) {
-	//			//label1->Text = "Error: " + curl_easy_strerror(res);
-	//		}
-	//		else {
-	//			// Parse JSON response
-	//			Json::Value jsonValue;
-	//			Json::Reader jsonReader;
-	//			if (jsonReader.parse(response, jsonValue)) {
-	//				auto results = jsonValue["daily"];
-	//				label22->Text = ConvertString(results["time"][0].asString()); //Displays the date
-	//				label23->Text = ConvertString(results["precipitation_sum"][0].asString()) + " mm"; //Displays the precipitation sum
-	//				label24->Text = ConvertString(results["precipitation_probability_mean"][0].asString()) + " %"; //Displays the precipitation probability
+		label2->Text = ConvertString(global->city);
+		updateSummaryPage();
 
-	//				label34->Text = ConvertString(results["temperature_2m_min"][0].asString()) + " °C"; //Displays the min temp
-	//				label33->Text = ConvertString(results["temperature_2m_max"][0].asString()) + " °C";//Displays the max temp
-
-	//				label32->Text = ConvertString(results["uv_index_clear_sky_max"][0].asString()); //Displays the clear sky max
-	//				label31->Text = ConvertString(results["uv_index_max"][0].asString()); //Displays the max uv index
-
-	//				label30->Text = ConvertString(results["wind_gusts_10m_max"][0].asString()) + " km/h"; //Displays the wind gusts
-	//				label29->Text = ConvertString(results["wind_speed_10m_max"][0].asString()) + " km/h"; //Displays the wind speed
-	//				label28->Text = GetWindDirection(results["wind_direction_10m_dominant"][0].asString()); //Displays the wind direction
-
-	//				label27->Text = GetTimeFromTimestamp(results["sunset"][0].asString()); //Displays the sunset
-	//				label25->Text = GetTimeFromTimestamp(results["sunrise"][0].asString()); //Displays the sunrise
-	//				label26->Text = ConvertSecondsToHours(results["sunshine_duration"][0].asString()) + " hours"; //Displays the sunshine duration	
-
-	//				label21->Text = GetWeatherDescription(results["weather_code"][0].asString()); //Displays the weather code
-	//			}
-	//			else {
-	//				label1->Text = "Failed to parse JSON response.";
-	//			}
-	//		}
-	//		curl_easy_cleanup(curl);
-	//	}
-	//// Populating the Graph on Summary Page
-	//	const std::string urlGraph("https://api.open-meteo.com/v1/forecast?latitude=" + ConvertString(lattitude) + "&longitude=" + ConvertString(lattitude) + "&minutely_15=temperature_2m");
-	//	curl = curl_easy_init();
-	//	if (curl) {
-	//		std::string response;
-	//		curl_easy_setopt(curl, CURLOPT_URL, urlGraph.c_str());
-	//		WriteCallbackDelegate^ writeCallbackDelegate = gcnew WriteCallbackDelegate(&WriteCallback);
-	//		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallbackDelegate);
-	//		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
-	//		CURLcode res = curl_easy_perform(curl);
-	//		if (res != CURLE_OK) {
-	//			//label1->Text = "Error: " + curl_easy_strerror(res);
-	//		}
-	//		else {
-	//			// Parse JSON response
-	//			Json::Value jsonValue;
-	//			Json::Reader jsonReader;
-	//			if (jsonReader.parse(response, jsonValue)) {
-	//				auto results = jsonValue["minutely_15"];
-	//				auto timeData = results["time"];
-	//				timeData.resize(96);
-	//				auto temperatureData = results["temperature_2m"];
-	//				temperatureData.resize(96);
-	//				// Assuming 'chart1' is a System::Windows::Forms::DataVisualization::Charting::Chart
-	//				chart1->Series->Clear(); // Clear existing data
-
-	//				// Add a series for temperature data
-	//				System::Windows::Forms::DataVisualization::Charting::Series^ temperatureSeries = gcnew System::Windows::Forms::DataVisualization::Charting::Series("Temperature");
-	//				temperatureSeries->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Line;
-
-	//				for (int i = 0; i < timeData.size(); ++i) {
-	//					// Extract time and temperature for each data point
-	//					System::String^ timeStr = GetTimeFromTimestamp(timeData[i].asString());
-	//					double temperature = temperatureData[i].asDouble();
-
-	//					// Add the data point to the chart
-	//					temperatureSeries->Points->AddXY(timeStr, temperature);
-	//				}
-
-	//				// Add the temperature series to the chart
-	//				chart1->Series->Add(temperatureSeries);
-
-	//				// Customize the chart appearance if needed
-	//				chart1->ChartAreas[0]->AxisX->Title = "Time";
-	//				chart1->ChartAreas[0]->AxisY->Title = "Temperature (°C)";
-	//				chart1->Legends->Clear(); // Remove legends if not needed
-
-
-	//			}
-	//			else {
-	//				label1->Text = "Failed to parse JSON response.";
-	//			}
-	//		}
-	//	}
 	}
-	private: System::Void textBox2_Leave(System::Object^ sender, System::EventArgs^ e) {
-
+	private: System::Void textBox2_KeyPress(System::Object^ sender, System::Windows::Forms::KeyPressEventArgs^ e) {
+		if (e->KeyChar == (char)13)
+		{
+			String ^ city = textBox2->Text;
+			const std::string urlCity("https://api.opencagedata.com/geocode/v1/json?q="+url_encode(ConvertString(city))+"&key=8bf3c14897c3437cb44326acc120f27d");
+			CURL* curl = curl_easy_init();
+			curl = curl_easy_init();
+			if (curl) {
+				std::string response;
+				curl_easy_setopt(curl, CURLOPT_URL, urlCity.c_str());
+				WriteCallbackDelegate^ writeCallbackDelegate = gcnew WriteCallbackDelegate(&WriteCallback);
+				curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallbackDelegate);
+				curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+				CURLcode res = curl_easy_perform(curl);
+				if (res != CURLE_OK) {
+					//label1->Text = "Error: " + curl_easy_strerror(res);
+				}
+				else {
+					// Parse JSON response
+					Json::Value jsonValue;
+					Json::Reader jsonReader;
+					if (jsonReader.parse(response, jsonValue)) {
+						auto results = jsonValue["results"];
+						if (results.size() == 0) {
+							label2->Text = "No results found.";
+							label36->Text = ConvertString(jsonValue["rate"]["remaining"].asString());
+							return;
+						}
+						global->city = ConvertString(textBox2->Text);
+						label2->Text = ConvertString(global->city);
+						auto geometry = results[0]["geometry"];
+						global->latitude = geometry["lat"].asString();
+						global->longitude = geometry["lng"].asString();
+						label36->Text = ConvertString(jsonValue["rate"]["remaining"].asString());
+						updateSummaryPage();
+						
+					}
+					else {
+						//label1->Text = "Failed to parse JSON response.";
+					}
+				}
+			}
+		}
 	}
 };
 }
 
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //
 //

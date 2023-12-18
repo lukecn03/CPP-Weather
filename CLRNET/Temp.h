@@ -424,6 +424,7 @@ namespace CLRNET {
 			this->Controls->Add(this->panel1);
 			this->Name = L"Temp";
 			this->Text = L"Temp";
+			this->Load += gcnew System::EventHandler(this, &Temp::Temp_Load);
 			this->panel1->ResumeLayout(false);
 			this->panel1->PerformLayout();
 			this->panel7->ResumeLayout(false);
@@ -442,5 +443,7 @@ namespace CLRNET {
 
 		}
 #pragma endregion
-	};
+	private: System::Void Temp_Load(System::Object^ sender, System::EventArgs^ e) {
+	}
+};
 }
