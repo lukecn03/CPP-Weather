@@ -117,7 +117,6 @@ namespace CLRNET {
 	private: System::Windows::Forms::TextBox^ textBox2;
 	private: System::Windows::Forms::Label^ label35;
 	private: System::Windows::Forms::Label^ label1;
-	private: System::Windows::Forms::Label^ label36;
 	private: System::Windows::Forms::Label^ label3;
 	private: System::Windows::Forms::Label^ label2;
 
@@ -190,6 +189,11 @@ namespace CLRNET {
 			// The string could not be converted to a double, so just convert it to a System::String^
 			return gcnew System::String(str.c_str());
 		}
+	}
+// Only converts from string to String^
+	public: System::String^ ConvertStringNoFormat(const std::string& str) {
+		// Convert the string to a System::String^
+		return gcnew System::String(str.c_str());
 	}
 //Converts from String^ to string
 	public: std::string ConvertString(System::String^ clrString) {
@@ -349,16 +353,16 @@ namespace CLRNET {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			System::Windows::Forms::DataVisualization::Charting::ChartArea^ chartArea1 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
-			System::Windows::Forms::DataVisualization::Charting::Legend^ legend1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
-			System::Windows::Forms::DataVisualization::Charting::Series^ series1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
+			System::Windows::Forms::DataVisualization::Charting::ChartArea^ chartArea2 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Legend^ legend2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
+			System::Windows::Forms::DataVisualization::Charting::Series^ series2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
+			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm::typeid));
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->chart1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Chart());
 			this->SummaryPanel = (gcnew System::Windows::Forms::Panel());
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
 			this->label22 = (gcnew System::Windows::Forms::Label());
 			this->panel7 = (gcnew System::Windows::Forms::Panel());
-			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->label21 = (gcnew System::Windows::Forms::Label());
 			this->panel6 = (gcnew System::Windows::Forms::Panel());
 			this->label34 = (gcnew System::Windows::Forms::Label());
@@ -404,7 +408,7 @@ namespace CLRNET {
 			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
 			this->label35 = (gcnew System::Windows::Forms::Label());
 			this->label2 = (gcnew System::Windows::Forms::Label());
-			this->label36 = (gcnew System::Windows::Forms::Label());
+			this->label3 = (gcnew System::Windows::Forms::Label());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->BeginInit();
 			this->SummaryPanel->SuspendLayout();
 			this->panel1->SuspendLayout();
@@ -428,17 +432,19 @@ namespace CLRNET {
 			// 
 			// chart1
 			// 
-			chartArea1->Name = L"ChartArea1";
-			this->chart1->ChartAreas->Add(chartArea1);
+			this->chart1->BackColor = System::Drawing::Color::Transparent;
+			chartArea2->Name = L"ChartArea1";
+			this->chart1->ChartAreas->Add(chartArea2);
 			this->chart1->Dock = System::Windows::Forms::DockStyle::Bottom;
-			legend1->Name = L"Legend1";
-			this->chart1->Legends->Add(legend1);
+			legend2->Name = L"Legend1";
+			this->chart1->Legends->Add(legend2);
 			this->chart1->Location = System::Drawing::Point(0, 334);
 			this->chart1->Name = L"chart1";
-			series1->ChartArea = L"ChartArea1";
-			series1->Legend = L"Legend1";
-			series1->Name = L"Series1";
-			this->chart1->Series->Add(series1);
+			this->chart1->Palette = System::Windows::Forms::DataVisualization::Charting::ChartColorPalette::EarthTones;
+			series2->ChartArea = L"ChartArea1";
+			series2->Legend = L"Legend1";
+			series2->Name = L"Series1";
+			this->chart1->Series->Add(series2);
 			this->chart1->Size = System::Drawing::Size(997, 239);
 			this->chart1->TabIndex = 2;
 			this->chart1->Text = L"chart1";
@@ -475,7 +481,7 @@ namespace CLRNET {
 			// 
 			this->label22->AutoSize = true;
 			this->label22->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 10));
-			this->label22->Location = System::Drawing::Point(175, 3);
+			this->label22->Location = System::Drawing::Point(175, 6);
 			this->label22->Name = L"label22";
 			this->label22->Size = System::Drawing::Size(73, 17);
 			this->label22->TabIndex = 4;
@@ -484,30 +490,20 @@ namespace CLRNET {
 			// panel7
 			// 
 			this->panel7->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->panel7->Controls->Add(this->label3);
 			this->panel7->Controls->Add(this->label21);
 			this->panel7->Location = System::Drawing::Point(21, 43);
 			this->panel7->Name = L"panel7";
 			this->panel7->Size = System::Drawing::Size(372, 144);
 			this->panel7->TabIndex = 7;
 			// 
-			// label3
-			// 
-			this->label3->AutoSize = true;
-			this->label3->Location = System::Drawing::Point(3, 17);
-			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(57, 20);
-			this->label3->TabIndex = 8;
-			this->label3->Text = L"label3";
-			// 
 			// label21
 			// 
 			this->label21->AutoSize = true;
-			this->label21->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label21->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label21->Location = System::Drawing::Point(87, 84);
+			this->label21->Location = System::Drawing::Point(102, 61);
 			this->label21->Name = L"label21";
-			this->label21->Size = System::Drawing::Size(94, 16);
+			this->label21->Size = System::Drawing::Size(124, 20);
 			this->label21->TabIndex = 3;
 			this->label21->Text = L"Weather Code";
 			// 
@@ -967,6 +963,7 @@ namespace CLRNET {
 			// label35
 			// 
 			this->label35->AutoSize = true;
+			this->label35->BackColor = System::Drawing::SystemColors::Control;
 			this->label35->Location = System::Drawing::Point(675, 7);
 			this->label35->Name = L"label35";
 			this->label35->Size = System::Drawing::Size(118, 13);
@@ -976,34 +973,38 @@ namespace CLRNET {
 			// label2
 			// 
 			this->label2->AutoSize = true;
+			this->label2->BackColor = System::Drawing::SystemColors::Control;
 			this->label2->Location = System::Drawing::Point(905, 7);
 			this->label2->Name = L"label2";
 			this->label2->Size = System::Drawing::Size(35, 13);
 			this->label2->TabIndex = 11;
 			this->label2->Text = L"label2";
 			// 
-			// label36
+			// label3
 			// 
-			this->label36->AutoSize = true;
-			this->label36->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 5.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+			this->label3->AutoSize = true;
+			this->label3->BackColor = System::Drawing::SystemColors::Control;
+			this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 5.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label36->Location = System::Drawing::Point(969, 0);
-			this->label36->Name = L"label36";
-			this->label36->Size = System::Drawing::Size(0, 7);
-			this->label36->TabIndex = 12;
+			this->label3->Location = System::Drawing::Point(973, 0);
+			this->label3->Name = L"label3";
+			this->label3->Size = System::Drawing::Size(0, 7);
+			this->label3->TabIndex = 13;
 			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+			this->BackColor = System::Drawing::SystemColors::GradientActiveCaption;
 			this->ClientSize = System::Drawing::Size(997, 597);
-			this->Controls->Add(this->label36);
+			this->Controls->Add(this->label3);
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->label35);
 			this->Controls->Add(this->textBox2);
 			this->Controls->Add(this->SummaryPanel);
 			this->Controls->Add(this->menuStrip1);
 			this->Controls->Add(this->label1);
+			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->MainMenuStrip = this->menuStrip1;
 			this->MaximumSize = System::Drawing::Size(1013, 636);
 			this->MinimumSize = System::Drawing::Size(1013, 636);
@@ -1056,7 +1057,7 @@ namespace CLRNET {
 				Json::Reader jsonReader;
 				if (jsonReader.parse(response, jsonValue)) {
 					auto results = jsonValue["daily"];
-					label22->Text = ConvertString(results["time"][0].asString()); //Displays the date
+					label22->Text = ConvertStringNoFormat(results["time"][0].asString()); //Displays the date
 					label23->Text = ConvertString(results["precipitation_sum"][0].asString()) + " mm"; //Displays the precipitation sum
 					label24->Text = ConvertString(results["precipitation_probability_mean"][0].asString()) + " %"; //Displays the precipitation probability
 
@@ -1147,7 +1148,6 @@ namespace CLRNET {
 		SummaryPanel->Visible = true;
 	}
 	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
-		
 		SummaryPanel->Visible = true;
 		// make other panels invisible
 
@@ -1180,7 +1180,7 @@ namespace CLRNET {
 						auto results = jsonValue["results"];
 						if (results.size() == 0) {
 							label2->Text = "No results found.";
-							label36->Text = ConvertString(jsonValue["rate"]["remaining"].asString());
+							label3->Text = ConvertString(jsonValue["rate"]["remaining"].asString());
 							return;
 						}
 						global->city = ConvertString(textBox2->Text);
@@ -1188,7 +1188,7 @@ namespace CLRNET {
 						auto geometry = results[0]["geometry"];
 						global->latitude = geometry["lat"].asString();
 						global->longitude = geometry["lng"].asString();
-						label36->Text = ConvertString(jsonValue["rate"]["remaining"].asString());
+						label3->Text = ConvertString(jsonValue["rate"]["remaining"].asString());
 						updateSummaryPage();
 						
 					}
