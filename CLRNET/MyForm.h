@@ -4,12 +4,14 @@
 #include <string>
 #include <cstring>
 #include <json/json.h>
-#include <msclr\marshal.h>
+//#include <msclr\marshal.h>
+#include <map>
 
 
 
 namespace CLRNET {
 
+	using namespace std;
 	using namespace System;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
@@ -17,15 +19,26 @@ namespace CLRNET {
 	using namespace System::Data;
 	using namespace System::Drawing;
 
+//Global variables
+	struct Globals {
+		std::string city = "Secunda";
+		std::string latitude = "-26.520453";
+		std::string longitude = "29.193603";
+	};
+
 	/// <summary>
 	/// Summary for MyForm
 	/// </summary>
 	public ref class MyForm : public System::Windows::Forms::Form
 	{
+	public: Globals* global;
 	public:
+	
+
 		MyForm(void)
 		{
 			InitializeComponent();
+			Globals* global = new Globals();
 			//
 			//TODO: Add the constructor code here
 			//
@@ -41,6 +54,7 @@ namespace CLRNET {
 			{
 				delete components;
 			}
+			delete global;
 		}
 	private: System::Windows::Forms::Label^ label1;
 	protected:
@@ -84,6 +98,20 @@ namespace CLRNET {
 	private: System::Windows::Forms::Label^ label19;
 	private: System::Windows::Forms::Panel^ panel7;
 	private: System::Windows::Forms::Label^ label22;
+	private: System::Windows::Forms::Label^ label34;
+	private: System::Windows::Forms::Label^ label33;
+	private: System::Windows::Forms::Label^ label32;
+	private: System::Windows::Forms::Label^ label31;
+	private: System::Windows::Forms::Label^ label24;
+	private: System::Windows::Forms::Label^ label23;
+	private: System::Windows::Forms::Label^ label30;
+	private: System::Windows::Forms::Label^ label29;
+	private: System::Windows::Forms::Label^ label28;
+	private: System::Windows::Forms::Label^ label27;
+	private: System::Windows::Forms::Label^ label26;
+	private: System::Windows::Forms::Label^ label25;
+	private: System::Windows::Forms::TextBox^ textBox2;
+	private: System::Windows::Forms::Label^ label35;
 
 	private: System::Windows::Forms::DataVisualization::Charting::Chart^ chart1;
 
@@ -137,6 +165,139 @@ namespace CLRNET {
 
 		return curl;
 	}
+// Converts from string to String^ and formats numbers to 1 decimal place
+	public: System::String^ ConvertString(const std::string& str) {
+		try {
+			// Try to convert the string to a double
+			double value = std::stod(str);
+
+			// Format the double to one decimal place
+			char buffer[32];
+			std::snprintf(buffer, sizeof(buffer), "%.1f", value);
+
+			// Convert the formatted string to a System::String^
+			return gcnew System::String(buffer);
+		}
+		catch (const std::invalid_argument&) {
+			// The string could not be converted to a double, so just convert it to a System::String^
+			return gcnew System::String(str.c_str());
+		}
+	}
+////Converts from String^ to string
+//	public: std::string ConvertString(System::String^ str) {
+//		// Convert the System::String^ to a std::string
+//		msclr::interop::marshal_context context;
+//		return context.marshal_as<std::string>(str);
+//	}
+//Extracts Time from DateTime JSON
+	public: System::String^ GetTimeFromTimestamp(const std::string& timestamp) {
+		// Extract the last 5 characters from the timestamp
+		std::string timeStr = timestamp.substr(timestamp.size() - 5);
+
+		// Convert the std::string to a System::String^
+		System::String^ time = gcnew System::String(timeStr.c_str());
+
+		return time;
+	}
+//Seconds to Hours
+	public: System::String^ ConvertSecondsToHours(const std::string& secondsStr) {
+		// Convert the std::string to an integer
+		int seconds = std::stoi(secondsStr);
+
+		// Convert seconds to hours
+		double hours = static_cast<double>(seconds) / 3600;
+
+		// Format the double to two decimal places
+		char buffer[32];
+		std::snprintf(buffer, sizeof(buffer), "%.2f", hours);
+
+		// Convert the formatted string to a System::String^
+		System::String^ hoursStr = gcnew System::String(buffer);
+
+		return hoursStr;
+	}
+//Decyphers Weather code WMO
+	public: System::String^ GetWeatherDescription(const std::string& code) {
+		// Map of weather codes to descriptions
+		std::map<std::string, std::string> weatherCodes = {
+			{"0", "Clear sky"},
+			{"1", "Mainly clear"},
+			{"2", "Partly cloudy"},
+			{"3", "Overcast"},
+			{"45", "Fog"},
+			{"48", "Depositing rime fog"},
+			{"51", "Light drizzle"},
+			{"53", "Moderate drizzle"},
+			{"55", "Dense drizzle"},
+			{"56", "Light freezing drizzle"},
+			{"57", "Dense freezing drizzle"},
+			{"61", "Slight rain"},
+			{"63", "Moderate rain"},
+			{"65", "Heavy rain"},
+			{"66", "Light freezing rain"},
+			{"67", "Heavy freezing rain"},
+			{"71", "Slight snow fall"},
+			{"73", "Moderate snow fall"},
+			{"75", "Heavy snow fall"},
+			{"77", "Snow grains"},
+			{"80", "Slight rain showers"},
+			{"81", "Moderate rain showers"},
+			{"82", "Violent rain showers"},
+			{"85", "Slight snow showers"},
+			{"86", "Heavy snow showers"},
+			{"95", "Slight or moderate thunderstorm"},
+			{"96", "Thunderstorm with slight hail"},
+			{"99", "Thunderstorm with heavy hail"}
+		};
+
+		// Find the description for the given code
+		auto it = weatherCodes.find(code);
+		if (it != weatherCodes.end()) {
+			// Convert the std::string to a System::String^
+			return gcnew System::String(it->second.c_str());
+		}
+		else {
+			// Code not found
+			return nullptr;
+		}
+	}
+//Gets wind direction from degrees
+	public: System::String^ GetWindDirection(const std::string& degreesStr) {
+		// Convert the std::string to an integer
+		int degrees = std::stoi(degreesStr);
+
+		// Map of degrees to directions
+		std::map<int, std::string> directions = {
+			{0, "N"},
+			{1, "NNE"},
+			{2, "NE"},
+			{3, "ENE"},
+			{4, "E"},
+			{5, "ESE"},
+			{6, "SE"},
+			{7, "SSE"},
+			{8, "S"},
+			{9, "SSW"},
+			{10, "SW"},
+			{11, "WSW"},
+			{12, "W"},
+			{13, "WNW"},
+			{14, "NW"},
+			{15, "NNW"}
+		};
+
+		// Find the direction for the given degrees
+		auto it = directions.find(degrees / 22.5);
+		if (it != directions.end()) {
+			// Convert the std::string to a System::String^
+			return gcnew System::String(it->second.c_str());
+		}
+		else {
+			// Direction not found
+			return nullptr;
+		}
+	}
+
 
 
 	private:
@@ -163,27 +324,39 @@ namespace CLRNET {
 			this->label3 = (gcnew System::Windows::Forms::Label());
 			this->SummaryPanel = (gcnew System::Windows::Forms::Panel());
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
-			this->panel7 = (gcnew System::Windows::Forms::Panel());
 			this->label22 = (gcnew System::Windows::Forms::Label());
+			this->panel7 = (gcnew System::Windows::Forms::Panel());
 			this->label21 = (gcnew System::Windows::Forms::Label());
 			this->panel6 = (gcnew System::Windows::Forms::Panel());
+			this->label34 = (gcnew System::Windows::Forms::Label());
+			this->label33 = (gcnew System::Windows::Forms::Label());
 			this->label20 = (gcnew System::Windows::Forms::Label());
 			this->label19 = (gcnew System::Windows::Forms::Label());
 			this->label18 = (gcnew System::Windows::Forms::Label());
 			this->panel5 = (gcnew System::Windows::Forms::Panel());
+			this->label32 = (gcnew System::Windows::Forms::Label());
+			this->label31 = (gcnew System::Windows::Forms::Label());
 			this->label17 = (gcnew System::Windows::Forms::Label());
 			this->label16 = (gcnew System::Windows::Forms::Label());
 			this->label15 = (gcnew System::Windows::Forms::Label());
 			this->panel4 = (gcnew System::Windows::Forms::Panel());
+			this->label24 = (gcnew System::Windows::Forms::Label());
+			this->label23 = (gcnew System::Windows::Forms::Label());
 			this->label14 = (gcnew System::Windows::Forms::Label());
 			this->label13 = (gcnew System::Windows::Forms::Label());
 			this->label12 = (gcnew System::Windows::Forms::Label());
 			this->panel3 = (gcnew System::Windows::Forms::Panel());
+			this->label30 = (gcnew System::Windows::Forms::Label());
+			this->label29 = (gcnew System::Windows::Forms::Label());
+			this->label28 = (gcnew System::Windows::Forms::Label());
 			this->label10 = (gcnew System::Windows::Forms::Label());
 			this->label9 = (gcnew System::Windows::Forms::Label());
 			this->label8 = (gcnew System::Windows::Forms::Label());
 			this->label7 = (gcnew System::Windows::Forms::Label());
 			this->panel2 = (gcnew System::Windows::Forms::Panel());
+			this->label27 = (gcnew System::Windows::Forms::Label());
+			this->label26 = (gcnew System::Windows::Forms::Label());
+			this->label25 = (gcnew System::Windows::Forms::Label());
 			this->label11 = (gcnew System::Windows::Forms::Label());
 			this->label6 = (gcnew System::Windows::Forms::Label());
 			this->label5 = (gcnew System::Windows::Forms::Label());
@@ -195,6 +368,8 @@ namespace CLRNET {
 			this->windToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->precipitationToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
 			this->visibilityToolStripMenuItem = (gcnew System::Windows::Forms::ToolStripMenuItem());
+			this->textBox2 = (gcnew System::Windows::Forms::TextBox());
+			this->label35 = (gcnew System::Windows::Forms::Label());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->BeginInit();
 			this->SummaryPanel->SuspendLayout();
 			this->panel1->SuspendLayout();
@@ -210,15 +385,15 @@ namespace CLRNET {
 			// label1
 			// 
 			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(677, 9);
+			this->label1->Location = System::Drawing::Point(17, 26);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(35, 13);
+			this->label1->Size = System::Drawing::Size(57, 20);
 			this->label1->TabIndex = 0;
 			this->label1->Text = L"label1";
 			// 
 			// button1
 			// 
-			this->button1->Location = System::Drawing::Point(718, 0);
+			this->button1->Location = System::Drawing::Point(734, 8);
 			this->button1->Name = L"button1";
 			this->button1->Size = System::Drawing::Size(75, 23);
 			this->button1->TabIndex = 1;
@@ -245,7 +420,7 @@ namespace CLRNET {
 			// 
 			// textBox1
 			// 
-			this->textBox1->Location = System::Drawing::Point(529, 2);
+			this->textBox1->Location = System::Drawing::Point(420, 0);
 			this->textBox1->Name = L"textBox1";
 			this->textBox1->Size = System::Drawing::Size(100, 20);
 			this->textBox1->TabIndex = 3;
@@ -253,18 +428,18 @@ namespace CLRNET {
 			// label2
 			// 
 			this->label2->AutoSize = true;
-			this->label2->Location = System::Drawing::Point(443, 5);
+			this->label2->Location = System::Drawing::Point(444, 13);
 			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(35, 13);
+			this->label2->Size = System::Drawing::Size(57, 20);
 			this->label2->TabIndex = 4;
 			this->label2->Text = L"label2";
 			// 
 			// label3
 			// 
 			this->label3->AutoSize = true;
-			this->label3->Location = System::Drawing::Point(931, 9);
+			this->label3->Location = System::Drawing::Point(931, 13);
 			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(35, 13);
+			this->label3->Size = System::Drawing::Size(57, 20);
 			this->label3->TabIndex = 6;
 			this->label3->Text = L"label3";
 			// 
@@ -280,10 +455,15 @@ namespace CLRNET {
 			// 
 			// panel1
 			// 
+			this->panel1->Controls->Add(this->label22);
+			this->panel1->Controls->Add(this->label3);
+			this->panel1->Controls->Add(this->label2);
 			this->panel1->Controls->Add(this->panel7);
 			this->panel1->Controls->Add(this->panel6);
+			this->panel1->Controls->Add(this->label1);
 			this->panel1->Controls->Add(this->panel5);
 			this->panel1->Controls->Add(this->panel4);
+			this->panel1->Controls->Add(this->button1);
 			this->panel1->Controls->Add(this->panel3);
 			this->panel1->Controls->Add(this->panel2);
 			this->panel1->Controls->Add(this->lblSummaryHeading);
@@ -295,26 +475,24 @@ namespace CLRNET {
 			this->panel1->Size = System::Drawing::Size(997, 334);
 			this->panel1->TabIndex = 3;
 			// 
+			// label22
+			// 
+			this->label22->AutoSize = true;
+			this->label22->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 10));
+			this->label22->Location = System::Drawing::Point(175, 3);
+			this->label22->Name = L"label22";
+			this->label22->Size = System::Drawing::Size(73, 17);
+			this->label22->TabIndex = 4;
+			this->label22->Text = L"Date Here";
+			// 
 			// panel7
 			// 
 			this->panel7->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
-			this->panel7->Controls->Add(this->label22);
 			this->panel7->Controls->Add(this->label21);
 			this->panel7->Location = System::Drawing::Point(21, 43);
 			this->panel7->Name = L"panel7";
 			this->panel7->Size = System::Drawing::Size(372, 144);
 			this->panel7->TabIndex = 7;
-			// 
-			// label22
-			// 
-			this->label22->AutoSize = true;
-			this->label22->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Underline, System::Drawing::GraphicsUnit::Point,
-				static_cast<System::Byte>(0)));
-			this->label22->Location = System::Drawing::Point(125, 17);
-			this->label22->Name = L"label22";
-			this->label22->Size = System::Drawing::Size(83, 20);
-			this->label22->TabIndex = 4;
-			this->label22->Text = L"Date Here";
 			// 
 			// label21
 			// 
@@ -330,6 +508,8 @@ namespace CLRNET {
 			// panel6
 			// 
 			this->panel6->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->panel6->Controls->Add(this->label34);
+			this->panel6->Controls->Add(this->label33);
 			this->panel6->Controls->Add(this->label20);
 			this->panel6->Controls->Add(this->label19);
 			this->panel6->Controls->Add(this->label18);
@@ -338,12 +518,34 @@ namespace CLRNET {
 			this->panel6->Size = System::Drawing::Size(372, 135);
 			this->panel6->TabIndex = 6;
 			// 
+			// label34
+			// 
+			this->label34->AutoSize = true;
+			this->label34->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label34->Location = System::Drawing::Point(23, 101);
+			this->label34->Name = L"label34";
+			this->label34->Size = System::Drawing::Size(51, 16);
+			this->label34->TabIndex = 5;
+			this->label34->Text = L"label34";
+			// 
+			// label33
+			// 
+			this->label33->AutoSize = true;
+			this->label33->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label33->Location = System::Drawing::Point(251, 101);
+			this->label33->Name = L"label33";
+			this->label33->Size = System::Drawing::Size(51, 16);
+			this->label33->TabIndex = 4;
+			this->label33->Text = L"label33";
+			// 
 			// label20
 			// 
 			this->label20->AutoSize = true;
 			this->label20->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label20->Location = System::Drawing::Point(291, 64);
+			this->label20->Location = System::Drawing::Point(260, 64);
 			this->label20->Name = L"label20";
 			this->label20->Size = System::Drawing::Size(32, 16);
 			this->label20->TabIndex = 2;
@@ -374,6 +576,8 @@ namespace CLRNET {
 			// panel5
 			// 
 			this->panel5->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->panel5->Controls->Add(this->label32);
+			this->panel5->Controls->Add(this->label31);
 			this->panel5->Controls->Add(this->label17);
 			this->panel5->Controls->Add(this->label16);
 			this->panel5->Controls->Add(this->label15);
@@ -381,6 +585,28 @@ namespace CLRNET {
 			this->panel5->Name = L"panel5";
 			this->panel5->Size = System::Drawing::Size(231, 135);
 			this->panel5->TabIndex = 5;
+			// 
+			// label32
+			// 
+			this->label32->AutoSize = true;
+			this->label32->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label32->Location = System::Drawing::Point(138, 101);
+			this->label32->Name = L"label32";
+			this->label32->Size = System::Drawing::Size(51, 16);
+			this->label32->TabIndex = 5;
+			this->label32->Text = L"label32";
+			// 
+			// label31
+			// 
+			this->label31->AutoSize = true;
+			this->label31->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label31->Location = System::Drawing::Point(138, 58);
+			this->label31->Name = L"label31";
+			this->label31->Size = System::Drawing::Size(51, 16);
+			this->label31->TabIndex = 4;
+			this->label31->Text = L"label31";
 			// 
 			// label17
 			// 
@@ -418,6 +644,8 @@ namespace CLRNET {
 			// panel4
 			// 
 			this->panel4->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->panel4->Controls->Add(this->label24);
+			this->panel4->Controls->Add(this->label23);
 			this->panel4->Controls->Add(this->label14);
 			this->panel4->Controls->Add(this->label13);
 			this->panel4->Controls->Add(this->label12);
@@ -425,6 +653,28 @@ namespace CLRNET {
 			this->panel4->Name = L"panel4";
 			this->panel4->Size = System::Drawing::Size(229, 144);
 			this->panel4->TabIndex = 4;
+			// 
+			// label24
+			// 
+			this->label24->AutoSize = true;
+			this->label24->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label24->Location = System::Drawing::Point(138, 97);
+			this->label24->Name = L"label24";
+			this->label24->Size = System::Drawing::Size(51, 16);
+			this->label24->TabIndex = 4;
+			this->label24->Text = L"label24";
+			// 
+			// label23
+			// 
+			this->label23->AutoSize = true;
+			this->label23->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label23->Location = System::Drawing::Point(138, 61);
+			this->label23->Name = L"label23";
+			this->label23->Size = System::Drawing::Size(51, 16);
+			this->label23->TabIndex = 3;
+			this->label23->Text = L"label23";
 			// 
 			// label14
 			// 
@@ -461,6 +711,9 @@ namespace CLRNET {
 			// panel3
 			// 
 			this->panel3->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->panel3->Controls->Add(this->label30);
+			this->panel3->Controls->Add(this->label29);
+			this->panel3->Controls->Add(this->label28);
 			this->panel3->Controls->Add(this->label10);
 			this->panel3->Controls->Add(this->label9);
 			this->panel3->Controls->Add(this->label8);
@@ -469,6 +722,39 @@ namespace CLRNET {
 			this->panel3->Name = L"panel3";
 			this->panel3->Size = System::Drawing::Size(347, 135);
 			this->panel3->TabIndex = 3;
+			// 
+			// label30
+			// 
+			this->label30->AutoSize = true;
+			this->label30->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label30->Location = System::Drawing::Point(106, 94);
+			this->label30->Name = L"label30";
+			this->label30->Size = System::Drawing::Size(51, 16);
+			this->label30->TabIndex = 6;
+			this->label30->Text = L"label30";
+			// 
+			// label29
+			// 
+			this->label29->AutoSize = true;
+			this->label29->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label29->Location = System::Drawing::Point(106, 64);
+			this->label29->Name = L"label29";
+			this->label29->Size = System::Drawing::Size(51, 16);
+			this->label29->TabIndex = 5;
+			this->label29->Text = L"label29";
+			// 
+			// label28
+			// 
+			this->label28->AutoSize = true;
+			this->label28->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label28->Location = System::Drawing::Point(282, 81);
+			this->label28->Name = L"label28";
+			this->label28->Size = System::Drawing::Size(51, 16);
+			this->label28->TabIndex = 4;
+			this->label28->Text = L"label28";
 			// 
 			// label10
 			// 
@@ -517,6 +803,9 @@ namespace CLRNET {
 			// panel2
 			// 
 			this->panel2->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->panel2->Controls->Add(this->label27);
+			this->panel2->Controls->Add(this->label26);
+			this->panel2->Controls->Add(this->label25);
 			this->panel2->Controls->Add(this->label11);
 			this->panel2->Controls->Add(this->label6);
 			this->panel2->Controls->Add(this->label5);
@@ -525,6 +814,39 @@ namespace CLRNET {
 			this->panel2->Name = L"panel2";
 			this->panel2->Size = System::Drawing::Size(347, 144);
 			this->panel2->TabIndex = 2;
+			// 
+			// label27
+			// 
+			this->label27->AutoSize = true;
+			this->label27->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label27->Location = System::Drawing::Point(282, 97);
+			this->label27->Name = L"label27";
+			this->label27->Size = System::Drawing::Size(51, 16);
+			this->label27->TabIndex = 7;
+			this->label27->Text = L"label27";
+			// 
+			// label26
+			// 
+			this->label26->AutoSize = true;
+			this->label26->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label26->Location = System::Drawing::Point(147, 97);
+			this->label26->Name = L"label26";
+			this->label26->Size = System::Drawing::Size(51, 16);
+			this->label26->TabIndex = 6;
+			this->label26->Text = L"label26";
+			// 
+			// label25
+			// 
+			this->label25->AutoSize = true;
+			this->label25->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label25->Location = System::Drawing::Point(12, 97);
+			this->label25->Name = L"label25";
+			this->label25->Size = System::Drawing::Size(51, 16);
+			this->label25->TabIndex = 5;
+			this->label25->Text = L"label25";
 			// 
 			// label11
 			// 
@@ -628,23 +950,39 @@ namespace CLRNET {
 			this->visibilityToolStripMenuItem->Size = System::Drawing::Size(63, 20);
 			this->visibilityToolStripMenuItem->Text = L"Visibility";
 			// 
+			// textBox2
+			// 
+			this->textBox2->Location = System::Drawing::Point(809, 4);
+			this->textBox2->Name = L"textBox2";
+			this->textBox2->Size = System::Drawing::Size(100, 20);
+			this->textBox2->TabIndex = 9;
+			this->textBox2->Leave += gcnew System::EventHandler(this, &MyForm::textBox2_Leave);
+			// 
+			// label35
+			// 
+			this->label35->AutoSize = true;
+			this->label35->Location = System::Drawing::Point(685, 8);
+			this->label35->Name = L"label35";
+			this->label35->Size = System::Drawing::Size(118, 13);
+			this->label35->TabIndex = 10;
+			this->label35->Text = L"Please Enter City Name";
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(997, 597);
+			this->Controls->Add(this->label35);
+			this->Controls->Add(this->textBox2);
 			this->Controls->Add(this->SummaryPanel);
-			this->Controls->Add(this->label2);
-			this->Controls->Add(this->textBox1);
-			this->Controls->Add(this->label1);
-			this->Controls->Add(this->label3);
-			this->Controls->Add(this->button1);
 			this->Controls->Add(this->menuStrip1);
+			this->Controls->Add(this->textBox1);
 			this->MainMenuStrip = this->menuStrip1;
 			this->MaximumSize = System::Drawing::Size(1013, 636);
 			this->MinimumSize = System::Drawing::Size(1013, 636);
 			this->Name = L"MyForm";
 			this->Text = L"Luke\'s Weather";
+			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->EndInit();
 			this->SummaryPanel->ResumeLayout(false);
 			this->panel1->ResumeLayout(false);
@@ -673,89 +1011,89 @@ namespace CLRNET {
 	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
 
 
-		const std::string urlWeather("https://api.open-meteo.com/v1/forecast?latitude=-26.520453&longitude=29.193603&minutely_15=temperature_2m");
-		CURL* curlWeather = curl_easy_init();
-		// Set remote URL.
-		curl_easy_setopt(curlWeather, CURLOPT_URL, urlWeather.c_str());
-		// Don't bother trying IPv6, which would increase DNS resolution time.
-		curl_easy_setopt(curlWeather, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-		// Don't wait forever, time out after 10 seconds.
-		curl_easy_setopt(curlWeather, CURLOPT_TIMEOUT, 10);
-		// Follow HTTP redirects if necessary.
-		curl_easy_setopt(curlWeather, CURLOPT_FOLLOWLOCATION, 1L);
-		// Response information.
-		long httpCode(0);
-		std::unique_ptr<std::string> httpData(new std::string());
-		// Hook up data handling function.
-		WriteCallbackDelegate^ writeCallbackDelegate = gcnew WriteCallbackDelegate(&WriteCallback);
-		curl_easy_setopt(curlWeather, CURLOPT_WRITEFUNCTION, writeCallbackDelegate);
-		// Hook up data container (will be passed as the last parameter to the
-		// callback handling function).  Can be any pointer type, since it will
-		// internally be passed as a void pointer.
-		curl_easy_setopt(curlWeather, CURLOPT_WRITEDATA, httpData.get());
-		// Run our HTTP GET command, capture the HTTP response code, and clean up.
-		curl_easy_perform(curlWeather);
-		curl_easy_getinfo(curlWeather, CURLINFO_RESPONSE_CODE, &httpCode);
-		curl_easy_cleanup(curlWeather);
+		//const std::string urlWeather("https://api.open-meteo.com/v1/forecast?latitude=-26.520453&longitude=29.193603&minutely_15=temperature_2m");
+		//CURL* curlWeather = curl_easy_init();
+		//// Set remote URL.
+		//curl_easy_setopt(curlWeather, CURLOPT_URL, urlWeather.c_str());
+		//// Don't bother trying IPv6, which would increase DNS resolution time.
+		//curl_easy_setopt(curlWeather, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+		//// Don't wait forever, time out after 10 seconds.
+		//curl_easy_setopt(curlWeather, CURLOPT_TIMEOUT, 10);
+		//// Follow HTTP redirects if necessary.
+		//curl_easy_setopt(curlWeather, CURLOPT_FOLLOWLOCATION, 1L);
+		//// Response information.
+		//long httpCode(0);
+		//std::unique_ptr<std::string> httpData(new std::string());
+		//// Hook up data handling function.
+		//WriteCallbackDelegate^ writeCallbackDelegate = gcnew WriteCallbackDelegate(&WriteCallback);
+		//curl_easy_setopt(curlWeather, CURLOPT_WRITEFUNCTION, writeCallbackDelegate);
+		//// Hook up data container (will be passed as the last parameter to the
+		//// callback handling function).  Can be any pointer type, since it will
+		//// internally be passed as a void pointer.
+		//curl_easy_setopt(curlWeather, CURLOPT_WRITEDATA, httpData.get());
+		//// Run our HTTP GET command, capture the HTTP response code, and clean up.
+		//curl_easy_perform(curlWeather);
+		//curl_easy_getinfo(curlWeather, CURLINFO_RESPONSE_CODE, &httpCode);
+		//curl_easy_cleanup(curlWeather);
 
-		//CURL* Data = PerformHttpGet("https://api.open-meteo.com/v1/forecast?latitude=-26.520453&longitude=29.193603&hourly=temperature_2m&start_date=2023-12-13&end_date=2023-12-14");
-		/*std::unique_ptr<std::string> httpData(new std::string());
-		long httpCode(0);
+		////CURL* Data = PerformHttpGet("https://api.open-meteo.com/v1/forecast?latitude=-26.520453&longitude=29.193603&hourly=temperature_2m&start_date=2023-12-13&end_date=2023-12-14");
+		///*std::unique_ptr<std::string> httpData(new std::string());
+		//long httpCode(0);
 
-		curl_easy_getinfo(Data, CURLINFO_RESPONSE_CODE, &httpCode);
-		curl_easy_setopt(Data, CURLOPT_WRITEDATA, httpData.get());*/
+		//curl_easy_getinfo(Data, CURLINFO_RESPONSE_CODE, &httpCode);
+		//curl_easy_setopt(Data, CURLOPT_WRITEDATA, httpData.get());*/
 
 
-		if (httpCode == 200)
-		{
+		//if (httpCode == 200)
+		//{
 
-			// Assuming you have a DateTimePicker control named dateTimePicker1 to select the date
-			
-			Json::Reader jsonReader;
-			Json::Value jsonData;
-			// Parse JSON response
-			if (jsonReader.parse(*httpData, jsonData)) {
-				auto hourlyData = jsonData["minutely_15"];
-				auto timeData = hourlyData["time"];
-				auto temperatureData = hourlyData["temperature_2m"];
+		//	// Assuming you have a DateTimePicker control named dateTimePicker1 to select the date
+		//	
+		//	Json::Reader jsonReader;
+		//	Json::Value jsonData;
+		//	// Parse JSON response
+		//	if (jsonReader.parse(*httpData, jsonData)) {
+		//		auto hourlyData = jsonData["minutely_15"];
+		//		auto timeData = hourlyData["time"];
+		//		auto temperatureData = hourlyData["temperature_2m"];
 
-				// Assuming 'chart1' is a System::Windows::Forms::DataVisualization::Charting::Chart
-				chart1->Series->Clear(); // Clear existing data
+		//		// Assuming 'chart1' is a System::Windows::Forms::DataVisualization::Charting::Chart
+		//		chart1->Series->Clear(); // Clear existing data
 
-				// Add a series for temperature data
-				System::Windows::Forms::DataVisualization::Charting::Series^ temperatureSeries = gcnew System::Windows::Forms::DataVisualization::Charting::Series("Temperature");
-				temperatureSeries->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Line;
+		//		// Add a series for temperature data
+		//		System::Windows::Forms::DataVisualization::Charting::Series^ temperatureSeries = gcnew System::Windows::Forms::DataVisualization::Charting::Series("Temperature");
+		//		temperatureSeries->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Line;
 
-				// Get the date of the first data point
-				System::DateTime^ firstDate = System::DateTime::Parse(gcnew System::String(timeData[0].asCString()));
-				firstDate = firstDate->Date;  // Extract the date component
+		//		// Get the date of the first data point
+		//		System::DateTime^ firstDate = System::DateTime::Parse(gcnew System::String(timeData[0].asCString()));
+		//		firstDate = firstDate->Date;  // Extract the date component
 
-				// Iterate through the data and add points for each 15 minutes on the first day
-				for (int i = 0; i < timeData.size(); ++i) {
-					// Extract time and temperature for each data point
-					System::DateTime^ dateTime = System::DateTime::Parse(gcnew System::String(timeData[i].asCString()));
-					double temperature = temperatureData[i].asDouble();
-					double time = dateTime->TimeOfDay.TotalHours;
+		//		// Iterate through the data and add points for each 15 minutes on the first day
+		//		for (int i = 0; i < timeData.size(); ++i) {
+		//			// Extract time and temperature for each data point
+		//			System::DateTime^ dateTime = System::DateTime::Parse(gcnew System::String(timeData[i].asCString()));
+		//			double temperature = temperatureData[i].asDouble();
+		//			double time = dateTime->TimeOfDay.TotalHours;
 
-					// Check if the date is the same as the first day
-					if (dateTime->Year == firstDate->Year &&
-						dateTime->Month == firstDate->Month &&
-						dateTime->Day == firstDate->Day) {
-						// Add the data point to the series
-						temperatureSeries->Points->AddXY(time, temperature);
-					}
-				}
+		//			// Check if the date is the same as the first day
+		//			if (dateTime->Year == firstDate->Year &&
+		//				dateTime->Month == firstDate->Month &&
+		//				dateTime->Day == firstDate->Day) {
+		//				// Add the data point to the series
+		//				temperatureSeries->Points->AddXY(time, temperature);
+		//			}
+		//		}
 
-				// Add the temperature series to the chart
-				chart1->Series->Add(temperatureSeries);
+		//		// Add the temperature series to the chart
+		//		chart1->Series->Add(temperatureSeries);
 
-				// Customize the chart appearance if needed
-				chart1->ChartAreas[0]->AxisX->Title = "Time";
-				chart1->ChartAreas[0]->AxisY->Title = "Temperature (°C)";
-				chart1->Legends->Clear(); // Remove legends if not needed
-			}
+		//		// Customize the chart appearance if needed
+		//		chart1->ChartAreas[0]->AxisX->Title = "Time";
+		//		chart1->ChartAreas[0]->AxisY->Title = "Temperature (°C)";
+		//		chart1->Legends->Clear(); // Remove legends if not needed
+		//	}
 
-		}
+		//}
 
 		
 
@@ -768,6 +1106,114 @@ namespace CLRNET {
 	}
 	private: System::Void summaryToolStripMenuItem_Click(System::Object^ sender, System::EventArgs^ e) {
 		SummaryPanel->Visible = true;
+	}
+	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
+		
+	SummaryPanel->Visible = true;
+	// make other panels invisible
+		const std::string urlDaily("https://api.open-meteo.com/v1/forecast?latitude="+ global->latitude + "&longitude=" + global->longitude + "&daily=sunshine_duration&daily=sunrise&daily=sunset&daily=wind_speed_10m_max&daily=wind_gusts_10m_max&daily=wind_direction_10m_dominant&daily=uv_index_max&daily=uv_index_clear_sky_max&daily=precipitation_sum&daily=precipitation_probability_mean&daily=temperature_2m_min&daily=temperature_2m_max&daily=weather_code");
+		label1->Text = ConvertString(urlDaily);
+	//	CURL* curl = curl_easy_init();
+	//	if (curl) {
+	//		std::string response;
+
+	//		curl_easy_setopt(curl, CURLOPT_URL, urlDaily.c_str());
+	//		WriteCallbackDelegate^ writeCallbackDelegate = gcnew WriteCallbackDelegate(&WriteCallback);
+	//		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallbackDelegate);
+	//		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+	//		CURLcode res = curl_easy_perform(curl);
+	//		if (res != CURLE_OK) {
+	//			//label1->Text = "Error: " + curl_easy_strerror(res);
+	//		}
+	//		else {
+	//			// Parse JSON response
+	//			Json::Value jsonValue;
+	//			Json::Reader jsonReader;
+	//			if (jsonReader.parse(response, jsonValue)) {
+	//				auto results = jsonValue["daily"];
+	//				label22->Text = ConvertString(results["time"][0].asString()); //Displays the date
+	//				label23->Text = ConvertString(results["precipitation_sum"][0].asString()) + " mm"; //Displays the precipitation sum
+	//				label24->Text = ConvertString(results["precipitation_probability_mean"][0].asString()) + " %"; //Displays the precipitation probability
+
+	//				label34->Text = ConvertString(results["temperature_2m_min"][0].asString()) + " °C"; //Displays the min temp
+	//				label33->Text = ConvertString(results["temperature_2m_max"][0].asString()) + " °C";//Displays the max temp
+
+	//				label32->Text = ConvertString(results["uv_index_clear_sky_max"][0].asString()); //Displays the clear sky max
+	//				label31->Text = ConvertString(results["uv_index_max"][0].asString()); //Displays the max uv index
+
+	//				label30->Text = ConvertString(results["wind_gusts_10m_max"][0].asString()) + " km/h"; //Displays the wind gusts
+	//				label29->Text = ConvertString(results["wind_speed_10m_max"][0].asString()) + " km/h"; //Displays the wind speed
+	//				label28->Text = GetWindDirection(results["wind_direction_10m_dominant"][0].asString()); //Displays the wind direction
+
+	//				label27->Text = GetTimeFromTimestamp(results["sunset"][0].asString()); //Displays the sunset
+	//				label25->Text = GetTimeFromTimestamp(results["sunrise"][0].asString()); //Displays the sunrise
+	//				label26->Text = ConvertSecondsToHours(results["sunshine_duration"][0].asString()) + " hours"; //Displays the sunshine duration	
+
+	//				label21->Text = GetWeatherDescription(results["weather_code"][0].asString()); //Displays the weather code
+	//			}
+	//			else {
+	//				label1->Text = "Failed to parse JSON response.";
+	//			}
+	//		}
+	//		curl_easy_cleanup(curl);
+	//	}
+	//// Populating the Graph on Summary Page
+	//	const std::string urlGraph("https://api.open-meteo.com/v1/forecast?latitude=" + ConvertString(lattitude) + "&longitude=" + ConvertString(lattitude) + "&minutely_15=temperature_2m");
+	//	curl = curl_easy_init();
+	//	if (curl) {
+	//		std::string response;
+	//		curl_easy_setopt(curl, CURLOPT_URL, urlGraph.c_str());
+	//		WriteCallbackDelegate^ writeCallbackDelegate = gcnew WriteCallbackDelegate(&WriteCallback);
+	//		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallbackDelegate);
+	//		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
+	//		CURLcode res = curl_easy_perform(curl);
+	//		if (res != CURLE_OK) {
+	//			//label1->Text = "Error: " + curl_easy_strerror(res);
+	//		}
+	//		else {
+	//			// Parse JSON response
+	//			Json::Value jsonValue;
+	//			Json::Reader jsonReader;
+	//			if (jsonReader.parse(response, jsonValue)) {
+	//				auto results = jsonValue["minutely_15"];
+	//				auto timeData = results["time"];
+	//				timeData.resize(96);
+	//				auto temperatureData = results["temperature_2m"];
+	//				temperatureData.resize(96);
+	//				// Assuming 'chart1' is a System::Windows::Forms::DataVisualization::Charting::Chart
+	//				chart1->Series->Clear(); // Clear existing data
+
+	//				// Add a series for temperature data
+	//				System::Windows::Forms::DataVisualization::Charting::Series^ temperatureSeries = gcnew System::Windows::Forms::DataVisualization::Charting::Series("Temperature");
+	//				temperatureSeries->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Line;
+
+	//				for (int i = 0; i < timeData.size(); ++i) {
+	//					// Extract time and temperature for each data point
+	//					System::String^ timeStr = GetTimeFromTimestamp(timeData[i].asString());
+	//					double temperature = temperatureData[i].asDouble();
+
+	//					// Add the data point to the chart
+	//					temperatureSeries->Points->AddXY(timeStr, temperature);
+	//				}
+
+	//				// Add the temperature series to the chart
+	//				chart1->Series->Add(temperatureSeries);
+
+	//				// Customize the chart appearance if needed
+	//				chart1->ChartAreas[0]->AxisX->Title = "Time";
+	//				chart1->ChartAreas[0]->AxisY->Title = "Temperature (°C)";
+	//				chart1->Legends->Clear(); // Remove legends if not needed
+
+
+	//			}
+	//			else {
+	//				label1->Text = "Failed to parse JSON response.";
+	//			}
+	//		}
+	//	}
+	}
+	private: System::Void textBox2_Leave(System::Object^ sender, System::EventArgs^ e) {
+
 	}
 };
 }
