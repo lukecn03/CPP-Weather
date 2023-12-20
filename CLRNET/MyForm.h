@@ -7,6 +7,10 @@
 //#include <msclr\marshal.h>
 #include <map>
 #include <iostream>
+#include <chrono>
+#include <ctime>
+#include <wininet.h>
+#pragma comment(lib,"Wininet.lib")
 
 
 
@@ -20,6 +24,8 @@ namespace CLRNET {
 	using namespace System::Data;
 	using namespace System::Drawing;
 
+
+
 //Global variables
 	struct Globals {
 		std::string city;
@@ -32,6 +38,7 @@ namespace CLRNET {
 	/// </summary>
 	public ref class MyForm : public System::Windows::Forms::Form
 	{
+	private:   System::Windows::Forms::Timer^ updateTimer;
 	public: Globals* global;
 	public:
 	
@@ -42,11 +49,18 @@ namespace CLRNET {
 			global->city = "Secunda";
 			global->latitude = "-26.520453";
 			global->longitude = "29.193603";
+			// Set up the timer
+			updateTimer = gcnew System::Windows::Forms::Timer();
+			updateTimer->Interval = 1000; // Set the interval to 1000 milliseconds (1 second)
+			updateTimer->Tick += gcnew System::EventHandler(this, &MyForm::UpdateTimer_Tick);
+			updateTimer->Start();
 			InitializeComponent();
 			//
 			//TODO: Add the constructor code here
 			//
 		}
+
+
 
 	protected:
 		/// <summary>
@@ -115,12 +129,18 @@ namespace CLRNET {
 	private: System::Windows::Forms::Label^ label26;
 	private: System::Windows::Forms::Label^ label25;
 	private: System::Windows::Forms::TextBox^ textBox2;
+	private: System::Windows::Forms::Label^ label37;
+	private: System::Windows::Forms::Label^ label36;
 	private: System::Windows::Forms::Label^ label35;
 	private: System::Windows::Forms::Label^ label1;
 	private: System::Windows::Forms::Label^ label3;
 	private: System::Windows::Forms::Label^ label2;
 
 	private: System::Windows::Forms::DataVisualization::Charting::Chart^ chart1;
+
+
+
+
 
 	
 //WRITE CALLBACK
@@ -172,6 +192,34 @@ namespace CLRNET {
 
 	//	return curl;
 	//}
+
+// Timer tick event handler
+	private: System::Void UpdateTimer_Tick(System::Object^ sender, System::EventArgs^ e) {
+		// Update the displayed time
+		label37->Text = GetCurrentTime();
+
+	}
+
+// Gets current time
+	public: System::String^ GetCurrentTime() {
+		auto now = std::chrono::system_clock::now();
+		auto currentTime = std::chrono::system_clock::to_time_t(now);
+		tm localTime;
+		localtime_s(&localTime, &currentTime);
+
+		// Format the time as "HH:mm"
+		char timeBuffer[6];
+		strftime(timeBuffer, sizeof(timeBuffer), "%H:%M", &localTime);
+
+		// Convert the char array to System::String^
+		System::String^ currentTimeStr = gcnew System::String(timeBuffer);
+
+		return currentTimeStr;
+	}
+// Checks Network connection
+	public: bool Connected() {
+		return InternetCheckConnectionA("http://www.google.com", FLAG_ICC_FORCE_CONNECTION, 0);
+	}
 // Converts from string to String^ and formats numbers to 1 decimal place
 	public: System::String^ ConvertString(const std::string& str) {
 		try {
@@ -320,6 +368,7 @@ namespace CLRNET {
 			return nullptr;
 		}
 	}
+// URL Encodes a string
 	public: std::string url_encode(const std::string& decoded)
 	{
 		 const auto encoded_value = curl_easy_escape(nullptr, decoded.c_str(), static_cast<int>(decoded.length()));
@@ -327,7 +376,7 @@ namespace CLRNET {
 		 curl_free(encoded_value);
 		 return result;
 	}
-
+//URl decodes a string
 	public: std::string url_decode(const std::string& encoded)
 	{
 		 int output_length;
@@ -353,9 +402,9 @@ namespace CLRNET {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			System::Windows::Forms::DataVisualization::Charting::ChartArea^ chartArea2 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
-			System::Windows::Forms::DataVisualization::Charting::Legend^ legend2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
-			System::Windows::Forms::DataVisualization::Charting::Series^ series2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
+			System::Windows::Forms::DataVisualization::Charting::ChartArea^ chartArea1 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Legend^ legend1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
+			System::Windows::Forms::DataVisualization::Charting::Series^ series1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
 			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(MyForm::typeid));
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->chart1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Chart());
@@ -363,6 +412,7 @@ namespace CLRNET {
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
 			this->label22 = (gcnew System::Windows::Forms::Label());
 			this->panel7 = (gcnew System::Windows::Forms::Panel());
+			this->label37 = (gcnew System::Windows::Forms::Label());
 			this->label21 = (gcnew System::Windows::Forms::Label());
 			this->panel6 = (gcnew System::Windows::Forms::Panel());
 			this->label34 = (gcnew System::Windows::Forms::Label());
@@ -409,6 +459,7 @@ namespace CLRNET {
 			this->label35 = (gcnew System::Windows::Forms::Label());
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->label3 = (gcnew System::Windows::Forms::Label());
+			this->label36 = (gcnew System::Windows::Forms::Label());
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->chart1))->BeginInit();
 			this->SummaryPanel->SuspendLayout();
 			this->panel1->SuspendLayout();
@@ -433,18 +484,18 @@ namespace CLRNET {
 			// chart1
 			// 
 			this->chart1->BackColor = System::Drawing::Color::Transparent;
-			chartArea2->Name = L"ChartArea1";
-			this->chart1->ChartAreas->Add(chartArea2);
+			chartArea1->Name = L"ChartArea1";
+			this->chart1->ChartAreas->Add(chartArea1);
 			this->chart1->Dock = System::Windows::Forms::DockStyle::Bottom;
-			legend2->Name = L"Legend1";
-			this->chart1->Legends->Add(legend2);
+			legend1->Name = L"Legend1";
+			this->chart1->Legends->Add(legend1);
 			this->chart1->Location = System::Drawing::Point(0, 334);
 			this->chart1->Name = L"chart1";
 			this->chart1->Palette = System::Windows::Forms::DataVisualization::Charting::ChartColorPalette::EarthTones;
-			series2->ChartArea = L"ChartArea1";
-			series2->Legend = L"Legend1";
-			series2->Name = L"Series1";
-			this->chart1->Series->Add(series2);
+			series1->ChartArea = L"ChartArea1";
+			series1->Legend = L"Legend1";
+			series1->Name = L"Series1";
+			this->chart1->Series->Add(series1);
 			this->chart1->Size = System::Drawing::Size(997, 239);
 			this->chart1->TabIndex = 2;
 			this->chart1->Text = L"chart1";
@@ -490,18 +541,28 @@ namespace CLRNET {
 			// panel7
 			// 
 			this->panel7->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->panel7->Controls->Add(this->label37);
 			this->panel7->Controls->Add(this->label21);
 			this->panel7->Location = System::Drawing::Point(21, 43);
 			this->panel7->Name = L"panel7";
 			this->panel7->Size = System::Drawing::Size(372, 144);
 			this->panel7->TabIndex = 7;
 			// 
+			// label37
+			// 
+			this->label37->AutoSize = true;
+			this->label37->Location = System::Drawing::Point(80, 79);
+			this->label37->Name = L"label37";
+			this->label37->Size = System::Drawing::Size(67, 20);
+			this->label37->TabIndex = 4;
+			this->label37->Text = L"label37";
+			// 
 			// label21
 			// 
 			this->label21->AutoSize = true;
 			this->label21->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label21->Location = System::Drawing::Point(102, 61);
+			this->label21->Location = System::Drawing::Point(135, 32);
 			this->label21->Name = L"label21";
 			this->label21->Size = System::Drawing::Size(124, 20);
 			this->label21->TabIndex = 3;
@@ -991,12 +1052,23 @@ namespace CLRNET {
 			this->label3->Size = System::Drawing::Size(0, 7);
 			this->label3->TabIndex = 13;
 			// 
+			// label36
+			// 
+			this->label36->AutoSize = true;
+			this->label36->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, static_cast<System::Drawing::FontStyle>((System::Drawing::FontStyle::Bold | System::Drawing::FontStyle::Underline)),
+				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
+			this->label36->Location = System::Drawing::Point(411, 4);
+			this->label36->Name = L"label36";
+			this->label36->Size = System::Drawing::Size(0, 16);
+			this->label36->TabIndex = 14;
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::SystemColors::GradientActiveCaption;
 			this->ClientSize = System::Drawing::Size(997, 597);
+			this->Controls->Add(this->label36);
 			this->Controls->Add(this->label3);
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->label35);
@@ -1035,6 +1107,14 @@ namespace CLRNET {
 		}
 #pragma endregion
 	private: void updateSummaryPage() {
+
+		if (!Connected()) {
+			SummaryPanel->Visible = false;
+			label36->Text = "Error: No internet connection.";
+			return;
+		}
+
+		label37->Text = GetCurrentTime();
 
 		std::string urlDaily = "https://api.open-meteo.com/v1/forecast?latitude=" + url_encode(global->latitude) + "&longitude=" + url_encode(global->longitude) + "&daily=sunshine_duration&daily=sunrise&daily=sunset&daily=wind_speed_10m_max&daily=wind_gusts_10m_max&daily=wind_direction_10m_dominant&daily=uv_index_max&daily=uv_index_clear_sky_max&daily=precipitation_sum&daily=precipitation_probability_mean&daily=temperature_2m_min&daily=temperature_2m_max&daily=weather_code";
 		//textBox2->Text = ConvertString(urlDaily.c_str());
@@ -1083,7 +1163,7 @@ namespace CLRNET {
 			}
 			curl_easy_cleanup(curl);
 		}
-		// Populating the Graph on Summary Page
+	// Populating the Graph on Summary Page
 		const std::string urlGraph("https://api.open-meteo.com/v1/forecast?latitude=" + url_encode(global->latitude) + "&longitude=" + url_encode(global->longitude) + "&minutely_15=temperature_2m");
 		curl = curl_easy_init();
 		if (curl) {
@@ -1106,12 +1186,13 @@ namespace CLRNET {
 					timeData.resize(96);
 					auto temperatureData = results["temperature_2m"];
 					temperatureData.resize(96);
+
 					// Assuming 'chart1' is a System::Windows::Forms::DataVisualization::Charting::Chart
 					chart1->Series->Clear(); // Clear existing data
 
 					// Add a series for temperature data
 					System::Windows::Forms::DataVisualization::Charting::Series^ temperatureSeries = gcnew System::Windows::Forms::DataVisualization::Charting::Series("Temperature");
-					temperatureSeries->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Line;
+					temperatureSeries->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Spline;
 
 					for (int i = 0; i < timeData.size(); ++i) {
 						// Extract time and temperature for each data point
@@ -1125,12 +1206,28 @@ namespace CLRNET {
 					// Add the temperature series to the chart
 					chart1->Series->Add(temperatureSeries);
 
+					// Calculate the minimum and maximum temperature values
+					double minTemperature = DBL_MAX;
+					double maxTemperature = -DBL_MAX;
+
+					for (int i = 0; i < timeData.size(); ++i) {
+						double temperature = temperatureData[i].asDouble();
+						minTemperature = min(minTemperature, temperature);
+						maxTemperature = max(maxTemperature, temperature);
+					}
+
+					// Set the Y-axis range based on the minimum and maximum temperatures
+					chart1->ChartAreas[0]->AxisY->Minimum = minTemperature - 1; // You can adjust the padding if needed
+					chart1->ChartAreas[0]->AxisY->Maximum = maxTemperature + 1; // You can adjust the padding if needed
+
+
 					// Customize the chart appearance if needed
+								// Customize the chart appearance if needed
 					chart1->ChartAreas[0]->AxisX->Title = "Time";
 					chart1->ChartAreas[0]->AxisY->Title = "Temperature (°C)";
+					chart1->ChartAreas[0]->AxisX->LabelStyle->Interval = 4; // Set the interval to 1 for every data point
+					chart1->ChartAreas[0]->AxisX->MajorGrid->Interval = 4; // Set the interval for major grid line
 					chart1->Legends->Clear(); // Remove legends if not needed
-
-
 				}
 				else {
 					//label1->Text = "Failed to parse JSON response.";
@@ -1203,201 +1300,4 @@ namespace CLRNET {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//
-//
-//
-//To display a temp for next 7 days on chart 1
-//
-//const std::string urlWeather("https://api.open-meteo.com/v1/forecast?latitude=-26.520453&longitude=29.193603&hourly=temperature_2m");
-//		CURL* curlWeather = curl_easy_init();
-//		// Set remote URL.
-//		curl_easy_setopt(curlWeather, CURLOPT_URL, urlWeather.c_str());
-//		// Don't bother trying IPv6, which would increase DNS resolution time.
-//		curl_easy_setopt(curlWeather, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-//		// Don't wait forever, time out after 10 seconds.
-//		curl_easy_setopt(curlWeather, CURLOPT_TIMEOUT, 10);
-//		// Follow HTTP redirects if necessary.
-//		curl_easy_setopt(curlWeather, CURLOPT_FOLLOWLOCATION, 1L);
-//		// Response information.
-//		long httpCode(0);
-//		std::unique_ptr<std::string> httpData(new std::string());
-//		// Hook up data handling function.
-//		WriteCallbackDelegate^ writeCallbackDelegate = gcnew WriteCallbackDelegate(&WriteCallback);
-//		curl_easy_setopt(curlWeather, CURLOPT_WRITEFUNCTION, writeCallbackDelegate);
-//		// Hook up data container (will be passed as the last parameter to the
-//		// callback handling function).  Can be any pointer type, since it will
-//		// internally be passed as a void pointer.
-//		curl_easy_setopt(curlWeather, CURLOPT_WRITEDATA, httpData.get());
-//		// Run our HTTP GET command, capture the HTTP response code, and clean up.
-//		curl_easy_perform(curlWeather);
-//		curl_easy_getinfo(curlWeather, CURLINFO_RESPONSE_CODE, &httpCode);
-//		curl_easy_cleanup(curlWeather);
-//
-//		//CURL* Data = PerformHttpGet("https://api.open-meteo.com/v1/forecast?latitude=-26.520453&longitude=29.193603&hourly=temperature_2m&start_date=2023-12-13&end_date=2023-12-14");
-//		/*std::unique_ptr<std::string> httpData(new std::string());
-//		long httpCode(0);
-//
-//		curl_easy_getinfo(Data, CURLINFO_RESPONSE_CODE, &httpCode);
-//		curl_easy_setopt(Data, CURLOPT_WRITEDATA, httpData.get());*/
-//	if (httpCode == 200)
-//{
-//
-//	/*std::string str = std::to_string(httpCode);
-//	System::String^ result = gcnew System::String(str.c_str());
-//	label1->Text = result;*/
-//
-//	chart1->Titles->Clear();
-//	chart1->Titles->Add("Temperature Forecast");
-//
-//	// Now httpData contains the output JSON. You can parse it with JsonCpp:
-//	Json::Value jsonData;
-//	Json::Reader jsonReader;
-//	if (jsonReader.parse(*httpData, jsonData)) {
-//		// Successfully parsed JSON data
-//
-//		// Assuming jsonData["timezone"] is a JSON value of type std::string
-//		std::string timezone = jsonData["timezone"].asString();
-//		// Convert std::string to System::String^
-//		System::String^ timezoneString = gcnew System::String(timezone.c_str());
-//		// Set the Text property of label1
-//		label1->Text = timezoneString;
-//
-//		// Access latitude, longitude, and other information
-//		double latitude = jsonData["latitude"].asDouble();
-//		double longitude = jsonData["longitude"].asDouble();
-//		// Access hourly temperature data
-//		Json::Value hourlyData = jsonData["hourly"];
-//		Json::Value timeData = hourlyData["time"];
-//		Json::Value temperatureData = hourlyData["temperature_2m"];
-//
-//		// Assuming 'chart1' is a System::Windows::Forms::DataVisualization::Charting::Chart
-//		chart1->Series->Clear(); // Clear existing data
-//
-//		// Add a series for temperature data
-//		System::Windows::Forms::DataVisualization::Charting::Series^ temperatureSeries = gcnew System::Windows::Forms::DataVisualization::Charting::Series("Temperature");
-//		temperatureSeries->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Line;
-//
-//		for (int i = 0; i < timeData.size(); ++i) {
-//			// Extract time and temperature for each data point
-//			System::DateTime^ dateTime = System::DateTime::Parse(gcnew System::String(timeData[i].asCString()));
-//			double temperature = temperatureData[i].asDouble();
-//
-//			// Add the data point to the series
-//			temperatureSeries->Points->AddXY(dateTime, temperature);
-//		}
-//
-//		// Add the temperature series to the chart
-//		chart1->Series->Add(temperatureSeries);
-//
-//		//// Add a series for temperature data
-//		//System::Windows::Forms::DataVisualization::Charting::Series^ temperatureSeries = gcnew System::Windows::Forms::DataVisualization::Charting::Series("Temperature");
-//		//temperatureSeries->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::Line;
-//
-//		//// Date for the previous data point to check for a new day
-//		//System::DateTime^ prevDate = nullptr;
-//		//for (int i = 0; i < timeData.size(); ++i) {
-//		//	// Extract time and temperature for each data point
-//		//	System::DateTime^ dateTime = System::DateTime::Parse(gcnew System::String(timeData[i].asCString()));
-//		//	double temperature = temperatureData[i].asDouble();
-//
-//		//	// Check for a new day
-//		//	if (!prevDate || prevDate->Day != dateTime->Day) {
-//		//		//// Add a data point with bold day label
-//		//		//// Add a data point
-//		//		//temperatureSeries->Points->AddXY(dateTime, temperature);
-//
-//		//		//// Get the last added point
-//		//		//int lastPointIndex = temperatureSeries->Points->Count - 1;
-//		//		//System::Windows::Forms::DataVisualization::Charting::DataPoint^ dataPoint = temperatureSeries->Points[lastPointIndex];
-//
-//		//		//// Set the label and font of the data point
-//		//		//dataPoint->Label = dateTime->ToString("MM/dd");
-//		//		//dataPoint->Font = gcnew System::Drawing::Font("Arial", 8, System::Drawing::FontStyle::Bold);
-//
-//		//	}
-//		//	else {
-//		//		// Add the data point with sub-label
-//		//		// Add a data point
-//		//		temperatureSeries->Points->AddXY(dateTime, temperature);
-//
-//		//		// Get the last added point
-//		//		int lastPointIndex = temperatureSeries->Points->Count - 1;
-//		//		System::Windows::Forms::DataVisualization::Charting::DataPoint^ dataPoint = temperatureSeries->Points[lastPointIndex];
-//
-//		//		// Set the label and font of the data point
-//		//		dataPoint->Label = dateTime->ToString("HH");
-//		//		dataPoint->Font = gcnew System::Drawing::Font("Arial", 6, System::Drawing::FontStyle::Regular);
-//		//	}
-//
-//		//	// Update the previous date
-//		//	prevDate = dateTime;
-//		//}
-//
-//		// Add the temperature series to the chart
-//		//chart1->Series->Add(temperatureSeries);
-//
-//		//// Customize the chart appearance if needed
-//		//chart1->ChartAreas[0]->AxisX->Title = "Time";
-//		//chart1->ChartAreas[0]->AxisY->Title = "Temperature (°C)";
-//		//chart1->Legends->Clear(); // Remove legends if not needed
-//	}
-//	else {
-//		// Failed to parse JSON
-//	}
-//}
-//
-//
-//To get location from a city name :
-//
-//
-///*std::wstring city;
-//System::String^ textBoxText = textBox1->Text;
-//city = msclr::interop::marshal_as<std::wstring>(textBoxText);
-//std::wstring apiUrl = L"https://api.opencagedata.com/geocode/v1/json?q=" + city + L"& key = 8bf3c14897c3437cb44326acc120f27d";*/
-//
-////const std::string url("https://api.opencagedata.com/geocode/v1/json?q=Secunda&key=8bf3c14897c3437cb44326acc120f27d");
-////CURL* curl = curl_easy_init();
-////if (curl) {
-////	std::string response;
-//
-////	curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-////	WriteCallbackDelegate^ writeCallbackDelegate = gcnew WriteCallbackDelegate(&WriteCallback);
-////	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeCallbackDelegate);
-////	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
-////	CURLcode res = curl_easy_perform(curl);
-////	if (res != CURLE_OK) {
-////		//label1->Text = "Error: " + curl_easy_strerror(res);
-////	}
-////	else {
-////		// Parse JSON response
-////		Json::Value jsonValue;
-////		Json::Reader jsonReader;
-////		if (jsonReader.parse(response, jsonValue)) {
-////			auto results = jsonValue["results"];
-////			if (!results.empty()) {
-////				auto location = results[0]["geometry"];
-////				double latitude = location["lat"].asDouble();
-////				double longitude = location["lng"].asDouble();
-////				label2->Text = "Latitude: " + latitude + "Longitude: " + longitude;
-////				label3->Text = gcnew System::String(jsonValue["rate"]["remaining"].asString().c_str()) + "/" +
-////					gcnew System::String(jsonValue["rate"]["limit"].asString().c_str()) +
-////					" Api limit remaining";
-//
-////			}
-////			else {
-////				label1->Text = L"No results found for the city: ";
-////			}
-////		}
-////		else {
-////			label1->Text = "Failed to parse JSON response.";
-////		}
-////	}
-////	curl_easy_cleanup(curl);
-////}
-//
-//
-//
-//
-
 
