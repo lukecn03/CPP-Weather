@@ -1248,6 +1248,7 @@ namespace CLRNET {
 	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
 		SummaryPanel->Visible = true;
 		// make other panels invisible
+		menuStrip1->Visible = false;
 
 		label2->Text = ConvertString(global->city);
 		updateSummaryPage();
