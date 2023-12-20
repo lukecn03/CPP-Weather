@@ -24,8 +24,6 @@ namespace CLRNET {
 	using namespace System::Data;
 	using namespace System::Drawing;
 
-
-
 //Global variables
 	struct Globals {
 		std::string city;
@@ -38,7 +36,6 @@ namespace CLRNET {
 	/// </summary>
 	public ref class MyForm : public System::Windows::Forms::Form
 	{
-	private:   System::Windows::Forms::Timer^ updateTimer;
 	public: Globals* global;
 	public:
 	
@@ -59,7 +56,6 @@ namespace CLRNET {
 			//TODO: Add the constructor code here
 			//
 		}
-
 
 
 
@@ -141,7 +137,7 @@ namespace CLRNET {
 
 
 
-
+	private:   System::Windows::Forms::Timer^ updateTimer;
 
 	
 //WRITE CALLBACK
@@ -193,14 +189,11 @@ namespace CLRNET {
 
 	//	return curl;
 	//}
-
-// Timer tick event handler
+	// Timer tick event handler
 	private: System::Void UpdateTimer_Tick(System::Object^ sender, System::EventArgs^ e) {
 		// Update the displayed time
 		label37->Text = GetCurrentTime();
-
 	}
-
 // Gets current time
 	public: System::String^ GetCurrentTime() {
 		auto now = std::chrono::system_clock::now();
@@ -552,7 +545,7 @@ namespace CLRNET {
 			// label37
 			// 
 			this->label37->AutoSize = true;
-			this->label37->Location = System::Drawing::Point(80, 79);
+			this->label37->Location = System::Drawing::Point(160, 100);
 			this->label37->Name = L"label37";
 			this->label37->Size = System::Drawing::Size(67, 20);
 			this->label37->TabIndex = 4;
@@ -1107,6 +1100,9 @@ namespace CLRNET {
 
 		}
 #pragma endregion
+
+
+
 	private: void updateSummaryPage() {
 
 		if (!Connected()) {
@@ -1199,6 +1195,10 @@ namespace CLRNET {
 						// Extract time and temperature for each data point
 						System::String^ timeStr = GetTimeFromTimestamp(timeData[i].asString());
 						double temperature = temperatureData[i].asDouble();
+						if (i == 0) {
+							System::String^ temp = ConvertStringNoFormat("00:00");
+							temperatureSeries->Points->AddXY(temp, temperature);
+						}
 
 						// Add the data point to the chart
 						temperatureSeries->Points->AddXY(timeStr, temperature);
