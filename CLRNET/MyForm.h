@@ -6,6 +6,7 @@
 #include <json/json.h>
 //#include <msclr\marshal.h>
 #include <map>
+#include <Windows.h>
 #include <iostream>
 #include <chrono>
 #include <ctime>
@@ -51,6 +52,11 @@ namespace CLRNET {
 			updateTimer->Interval = 1000; // Set the interval to 1000 milliseconds (1 second)
 			updateTimer->Tick += gcnew System::EventHandler(this, &MyForm::UpdateTimer_Tick);
 			updateTimer->Start();
+			// Set up the BackgroundWorker
+			/*backgroundWorker = gcnew System::ComponentModel::BackgroundWorker();
+			backgroundWorker->WorkerReportsProgress = false;
+			backgroundWorker->WorkerSupportsCancellation = false;
+			backgroundWorker->DoWork += gcnew System::ComponentModel::DoWorkEventHandler(this, &MyForm::BackgroundWorker_DoWork);*/
 			InitializeComponent();
 			//
 			//TODO: Add the constructor code here
@@ -138,6 +144,7 @@ namespace CLRNET {
 
 
 	private:   System::Windows::Forms::Timer^ updateTimer;
+	private:   System::ComponentModel::BackgroundWorker^ backgroundWorker;
 
 	
 //WRITE CALLBACK
@@ -189,10 +196,72 @@ namespace CLRNET {
 
 	//	return curl;
 	//}
-	// Timer tick event handler
+// BackgroundWorker_DoWork event handler
+	private: System::Void BackgroundWorker_DoWork(System::Object^ sender, System::ComponentModel::DoWorkEventArgs^ e) {
+		//// Your network-related tasks (e.g., checking internet connectivity) go here
+		//// You may need to implement the Connected() function and adjust the sleep duration accordingly
+		//while (true) {
+		//	if (Connected()) {
+		//		// Connected to the internet, perform your tasks
+		//		updateSummaryPage();
+		//		label36->Visible = false;
+		//		SummaryPanel->Visible = true;
+		//		textBox2->Visible = true;
+		//		label2->Visible = true;
+		//		label3->Visible = true;
+		//		label35->Visible = true;
+		//		label37->Text = GetCurrentTime();
+		//		// For testing, simulate some network-related task
+		//		Sleep(1000);
+		//	}
+		//	else {
+		//		// Not connected to the internet, handle accordingly
+		//		label36->Visible = true;
+		//		SummaryPanel->Visible = false;
+		//		textBox2->Visible = false;
+		//		label2->Visible = false;
+		//		label3->Visible = false;
+		//		label35->Visible = false;
+
+		//		// For testing, simulate checking connectivity every second
+		//		Sleep(1000);
+		//	}
+		//}
+	}
+// Checks Network connection
+	public: bool Connected() {
+		return InternetCheckConnectionA("http://www.google.com", FLAG_ICC_FORCE_CONNECTION, 0);
+	}
+
+// Timer tick event handler
 	private: System::Void UpdateTimer_Tick(System::Object^ sender, System::EventArgs^ e) {
 		// Update the displayed time
-		label37->Text = GetCurrentTime();
+		//if (!backgroundWorker->IsBusy) {
+		//	// Start the BackgroundWorker if it's not already busy
+		//	backgroundWorker->RunWorkerAsync();
+		//}
+		// Update the displayed time and UI by eitehr using this way or using a background worker
+		if (!Connected()) {
+			label36->Visible = true;
+			SummaryPanel->Visible = false;
+			textBox2->Visible = false;
+			label2->Visible = false;
+			label3->Visible = false;
+			label35->Visible = false;
+		}
+		else {
+			if (label36->Visible) {
+				updateSummaryPage();
+			}
+			label36->Visible = false;
+			SummaryPanel->Visible = true;
+			textBox2->Visible = true;
+			label2->Visible = true;
+			label3->Visible = true;
+			label35->Visible = true;
+			label37->Text = GetCurrentTime();
+		}
+
 	}
 // Gets current time
 	public: System::String^ GetCurrentTime() {
@@ -209,10 +278,6 @@ namespace CLRNET {
 		System::String^ currentTimeStr = gcnew System::String(timeBuffer);
 
 		return currentTimeStr;
-	}
-// Checks Network connection
-	public: bool Connected() {
-		return InternetCheckConnectionA("http://www.google.com", FLAG_ICC_FORCE_CONNECTION, 0);
 	}
 // Converts from string to String^ and formats numbers to 1 decimal place
 	public: System::String^ ConvertString(const std::string& str) {
@@ -1051,7 +1116,7 @@ namespace CLRNET {
 			this->label36->AutoSize = true;
 			this->label36->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, static_cast<System::Drawing::FontStyle>((System::Drawing::FontStyle::Bold | System::Drawing::FontStyle::Underline)),
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->label36->Location = System::Drawing::Point(411, 4);
+			this->label36->Location = System::Drawing::Point(411, 240);
 			this->label36->Name = L"label36";
 			this->label36->Size = System::Drawing::Size(0, 16);
 			this->label36->TabIndex = 14;
@@ -1105,11 +1170,10 @@ namespace CLRNET {
 
 	private: void updateSummaryPage() {
 
-		if (!Connected()) {
-			SummaryPanel->Visible = false;
-			label36->Text = "Error: No internet connection.";
-			return;
-		}
+		label36->Text = "Error: No internet connection.";
+		label36->Visible = false;
+		SummaryPanel->Visible = true;
+
 
 		label37->Text = GetCurrentTime();
 
@@ -1249,6 +1313,7 @@ namespace CLRNET {
 		SummaryPanel->Visible = true;
 		// make other panels invisible
 		menuStrip1->Visible = false;
+		label1->Visible = false;
 
 		label2->Text = ConvertString(global->city);
 		updateSummaryPage();
