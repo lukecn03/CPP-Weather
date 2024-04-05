@@ -15,6 +15,9 @@
 
 
 
+
+
+
 namespace CLRNET {
 
 	using namespace std;
@@ -534,9 +537,10 @@ namespace CLRNET {
 			// label1
 			// 
 			this->label1->AutoSize = true;
-			this->label1->Location = System::Drawing::Point(925, 3);
+			this->label1->Location = System::Drawing::Point(1233, 4);
+			this->label1->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(35, 13);
+			this->label1->Size = System::Drawing::Size(44, 16);
 			this->label1->TabIndex = 0;
 			this->label1->Text = L"label1";
 			// 
@@ -548,14 +552,15 @@ namespace CLRNET {
 			this->chart1->Dock = System::Windows::Forms::DockStyle::Bottom;
 			legend1->Name = L"Legend1";
 			this->chart1->Legends->Add(legend1);
-			this->chart1->Location = System::Drawing::Point(0, 334);
+			this->chart1->Location = System::Drawing::Point(0, 403);
+			this->chart1->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
 			this->chart1->Name = L"chart1";
 			this->chart1->Palette = System::Windows::Forms::DataVisualization::Charting::ChartColorPalette::EarthTones;
 			series1->ChartArea = L"ChartArea1";
 			series1->Legend = L"Legend1";
 			series1->Name = L"Series1";
 			this->chart1->Series->Add(series1);
-			this->chart1->Size = System::Drawing::Size(997, 239);
+			this->chart1->Size = System::Drawing::Size(1327, 294);
 			this->chart1->TabIndex = 2;
 			this->chart1->Text = L"chart1";
 			// 
@@ -564,9 +569,10 @@ namespace CLRNET {
 			this->SummaryPanel->Controls->Add(this->panel1);
 			this->SummaryPanel->Controls->Add(this->chart1);
 			this->SummaryPanel->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->SummaryPanel->Location = System::Drawing::Point(0, 24);
+			this->SummaryPanel->Location = System::Drawing::Point(0, 28);
+			this->SummaryPanel->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
 			this->SummaryPanel->Name = L"SummaryPanel";
-			this->SummaryPanel->Size = System::Drawing::Size(997, 573);
+			this->SummaryPanel->Size = System::Drawing::Size(1327, 697);
 			this->SummaryPanel->TabIndex = 7;
 			// 
 			// panel1
@@ -583,17 +589,19 @@ namespace CLRNET {
 			this->panel1->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->panel1->Location = System::Drawing::Point(0, 0);
+			this->panel1->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
 			this->panel1->Name = L"panel1";
-			this->panel1->Size = System::Drawing::Size(997, 334);
+			this->panel1->Size = System::Drawing::Size(1327, 403);
 			this->panel1->TabIndex = 3;
 			// 
 			// label22
 			// 
 			this->label22->AutoSize = true;
 			this->label22->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 10));
-			this->label22->Location = System::Drawing::Point(175, 6);
+			this->label22->Location = System::Drawing::Point(233, 7);
+			this->label22->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label22->Name = L"label22";
-			this->label22->Size = System::Drawing::Size(73, 17);
+			this->label22->Size = System::Drawing::Size(87, 20);
 			this->label22->TabIndex = 4;
 			this->label22->Text = L"Date Here";
 			// 
@@ -602,17 +610,19 @@ namespace CLRNET {
 			this->panel7->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
 			this->panel7->Controls->Add(this->label37);
 			this->panel7->Controls->Add(this->label21);
-			this->panel7->Location = System::Drawing::Point(21, 43);
+			this->panel7->Location = System::Drawing::Point(28, 53);
+			this->panel7->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
 			this->panel7->Name = L"panel7";
-			this->panel7->Size = System::Drawing::Size(372, 144);
+			this->panel7->Size = System::Drawing::Size(495, 177);
 			this->panel7->TabIndex = 7;
 			// 
 			// label37
 			// 
 			this->label37->AutoSize = true;
-			this->label37->Location = System::Drawing::Point(160, 100);
+			this->label37->Location = System::Drawing::Point(213, 123);
+			this->label37->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label37->Name = L"label37";
-			this->label37->Size = System::Drawing::Size(67, 20);
+			this->label37->Size = System::Drawing::Size(82, 25);
 			this->label37->TabIndex = 4;
 			this->label37->Text = L"label37";
 			// 
@@ -621,9 +631,10 @@ namespace CLRNET {
 			this->label21->AutoSize = true;
 			this->label21->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label21->Location = System::Drawing::Point(135, 32);
+			this->label21->Location = System::Drawing::Point(180, 39);
+			this->label21->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label21->Name = L"label21";
-			this->label21->Size = System::Drawing::Size(124, 20);
+			this->label21->Size = System::Drawing::Size(152, 25);
 			this->label21->TabIndex = 3;
 			this->label21->Text = L"Weather Code";
 			// 
@@ -635,9 +646,10 @@ namespace CLRNET {
 			this->panel6->Controls->Add(this->label20);
 			this->panel6->Controls->Add(this->label19);
 			this->panel6->Controls->Add(this->label18);
-			this->panel6->Location = System::Drawing::Point(21, 193);
+			this->panel6->Location = System::Drawing::Point(28, 238);
+			this->panel6->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
 			this->panel6->Name = L"panel6";
-			this->panel6->Size = System::Drawing::Size(372, 135);
+			this->panel6->Size = System::Drawing::Size(495, 166);
 			this->panel6->TabIndex = 6;
 			// 
 			// label34
@@ -645,9 +657,10 @@ namespace CLRNET {
 			this->label34->AutoSize = true;
 			this->label34->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label34->Location = System::Drawing::Point(23, 101);
+			this->label34->Location = System::Drawing::Point(31, 124);
+			this->label34->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label34->Name = L"label34";
-			this->label34->Size = System::Drawing::Size(51, 16);
+			this->label34->Size = System::Drawing::Size(62, 20);
 			this->label34->TabIndex = 5;
 			this->label34->Text = L"label34";
 			// 
@@ -656,9 +669,10 @@ namespace CLRNET {
 			this->label33->AutoSize = true;
 			this->label33->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label33->Location = System::Drawing::Point(251, 101);
+			this->label33->Location = System::Drawing::Point(335, 124);
+			this->label33->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label33->Name = L"label33";
-			this->label33->Size = System::Drawing::Size(51, 16);
+			this->label33->Size = System::Drawing::Size(62, 20);
 			this->label33->TabIndex = 4;
 			this->label33->Text = L"label33";
 			// 
@@ -667,9 +681,10 @@ namespace CLRNET {
 			this->label20->AutoSize = true;
 			this->label20->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label20->Location = System::Drawing::Point(260, 64);
+			this->label20->Location = System::Drawing::Point(347, 79);
+			this->label20->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label20->Name = L"label20";
-			this->label20->Size = System::Drawing::Size(32, 16);
+			this->label20->Size = System::Drawing::Size(40, 20);
 			this->label20->TabIndex = 2;
 			this->label20->Text = L"Max";
 			// 
@@ -678,9 +693,10 @@ namespace CLRNET {
 			this->label19->AutoSize = true;
 			this->label19->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label19->Location = System::Drawing::Point(33, 64);
+			this->label19->Location = System::Drawing::Point(44, 79);
+			this->label19->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label19->Name = L"label19";
-			this->label19->Size = System::Drawing::Size(28, 16);
+			this->label19->Size = System::Drawing::Size(36, 20);
 			this->label19->TabIndex = 1;
 			this->label19->Text = L"Min";
 			// 
@@ -689,9 +705,10 @@ namespace CLRNET {
 			this->label18->AutoSize = true;
 			this->label18->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Underline, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label18->Location = System::Drawing::Point(125, 15);
+			this->label18->Location = System::Drawing::Point(167, 18);
+			this->label18->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label18->Name = L"label18";
-			this->label18->Size = System::Drawing::Size(100, 20);
+			this->label18->Size = System::Drawing::Size(124, 25);
 			this->label18->TabIndex = 0;
 			this->label18->Text = L"Temperature";
 			// 
@@ -703,9 +720,10 @@ namespace CLRNET {
 			this->panel5->Controls->Add(this->label17);
 			this->panel5->Controls->Add(this->label16);
 			this->panel5->Controls->Add(this->label15);
-			this->panel5->Location = System::Drawing::Point(400, 193);
+			this->panel5->Location = System::Drawing::Point(533, 238);
+			this->panel5->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
 			this->panel5->Name = L"panel5";
-			this->panel5->Size = System::Drawing::Size(231, 135);
+			this->panel5->Size = System::Drawing::Size(307, 166);
 			this->panel5->TabIndex = 5;
 			// 
 			// label32
@@ -713,9 +731,10 @@ namespace CLRNET {
 			this->label32->AutoSize = true;
 			this->label32->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label32->Location = System::Drawing::Point(138, 101);
+			this->label32->Location = System::Drawing::Point(184, 124);
+			this->label32->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label32->Name = L"label32";
-			this->label32->Size = System::Drawing::Size(51, 16);
+			this->label32->Size = System::Drawing::Size(62, 20);
 			this->label32->TabIndex = 5;
 			this->label32->Text = L"label32";
 			// 
@@ -724,9 +743,10 @@ namespace CLRNET {
 			this->label31->AutoSize = true;
 			this->label31->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label31->Location = System::Drawing::Point(138, 58);
+			this->label31->Location = System::Drawing::Point(184, 71);
+			this->label31->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label31->Name = L"label31";
-			this->label31->Size = System::Drawing::Size(51, 16);
+			this->label31->Size = System::Drawing::Size(62, 20);
 			this->label31->TabIndex = 4;
 			this->label31->Text = L"label31";
 			// 
@@ -735,9 +755,10 @@ namespace CLRNET {
 			this->label17->AutoSize = true;
 			this->label17->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label17->Location = System::Drawing::Point(16, 101);
+			this->label17->Location = System::Drawing::Point(21, 124);
+			this->label17->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label17->Name = L"label17";
-			this->label17->Size = System::Drawing::Size(91, 16);
+			this->label17->Size = System::Drawing::Size(115, 20);
 			this->label17->TabIndex = 2;
 			this->label17->Text = L"Clear sky max";
 			// 
@@ -746,9 +767,10 @@ namespace CLRNET {
 			this->label16->AutoSize = true;
 			this->label16->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label16->Location = System::Drawing::Point(16, 58);
+			this->label16->Location = System::Drawing::Point(21, 71);
+			this->label16->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label16->Name = L"label16";
-			this->label16->Size = System::Drawing::Size(32, 16);
+			this->label16->Size = System::Drawing::Size(40, 20);
 			this->label16->TabIndex = 1;
 			this->label16->Text = L"Max";
 			// 
@@ -757,9 +779,10 @@ namespace CLRNET {
 			this->label15->AutoSize = true;
 			this->label15->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Underline, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label15->Location = System::Drawing::Point(74, 17);
+			this->label15->Location = System::Drawing::Point(99, 21);
+			this->label15->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label15->Name = L"label15";
-			this->label15->Size = System::Drawing::Size(75, 20);
+			this->label15->Size = System::Drawing::Size(93, 25);
 			this->label15->TabIndex = 0;
 			this->label15->Text = L"UV Index";
 			// 
@@ -771,9 +794,10 @@ namespace CLRNET {
 			this->panel4->Controls->Add(this->label14);
 			this->panel4->Controls->Add(this->label13);
 			this->panel4->Controls->Add(this->label12);
-			this->panel4->Location = System::Drawing::Point(400, 43);
+			this->panel4->Location = System::Drawing::Point(533, 53);
+			this->panel4->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
 			this->panel4->Name = L"panel4";
-			this->panel4->Size = System::Drawing::Size(229, 144);
+			this->panel4->Size = System::Drawing::Size(305, 177);
 			this->panel4->TabIndex = 4;
 			// 
 			// label24
@@ -781,9 +805,10 @@ namespace CLRNET {
 			this->label24->AutoSize = true;
 			this->label24->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label24->Location = System::Drawing::Point(138, 97);
+			this->label24->Location = System::Drawing::Point(184, 119);
+			this->label24->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label24->Name = L"label24";
-			this->label24->Size = System::Drawing::Size(51, 16);
+			this->label24->Size = System::Drawing::Size(62, 20);
 			this->label24->TabIndex = 4;
 			this->label24->Text = L"label24";
 			// 
@@ -792,9 +817,10 @@ namespace CLRNET {
 			this->label23->AutoSize = true;
 			this->label23->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label23->Location = System::Drawing::Point(138, 61);
+			this->label23->Location = System::Drawing::Point(184, 75);
+			this->label23->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label23->Name = L"label23";
-			this->label23->Size = System::Drawing::Size(51, 16);
+			this->label23->Size = System::Drawing::Size(62, 20);
 			this->label23->TabIndex = 3;
 			this->label23->Text = L"label23";
 			// 
@@ -803,9 +829,10 @@ namespace CLRNET {
 			this->label14->AutoSize = true;
 			this->label14->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label14->Location = System::Drawing::Point(7, 97);
+			this->label14->Location = System::Drawing::Point(9, 119);
+			this->label14->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label14->Name = L"label14";
-			this->label14->Size = System::Drawing::Size(71, 16);
+			this->label14->Size = System::Drawing::Size(87, 20);
 			this->label14->TabIndex = 2;
 			this->label14->Text = L"Probability";
 			// 
@@ -814,9 +841,10 @@ namespace CLRNET {
 			this->label13->AutoSize = true;
 			this->label13->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label13->Location = System::Drawing::Point(7, 61);
+			this->label13->Location = System::Drawing::Point(9, 75);
+			this->label13->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label13->Name = L"label13";
-			this->label13->Size = System::Drawing::Size(59, 16);
+			this->label13->Size = System::Drawing::Size(70, 20);
 			this->label13->TabIndex = 1;
 			this->label13->Text = L"Average";
 			// 
@@ -824,9 +852,10 @@ namespace CLRNET {
 			// 
 			this->label12->AutoSize = true;
 			this->label12->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Underline));
-			this->label12->Location = System::Drawing::Point(52, 17);
+			this->label12->Location = System::Drawing::Point(69, 21);
+			this->label12->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label12->Name = L"label12";
-			this->label12->Size = System::Drawing::Size(96, 20);
+			this->label12->Size = System::Drawing::Size(118, 25);
 			this->label12->TabIndex = 0;
 			this->label12->Text = L"Precipitation";
 			// 
@@ -840,9 +869,10 @@ namespace CLRNET {
 			this->panel3->Controls->Add(this->label9);
 			this->panel3->Controls->Add(this->label8);
 			this->panel3->Controls->Add(this->label7);
-			this->panel3->Location = System::Drawing::Point(635, 193);
+			this->panel3->Location = System::Drawing::Point(847, 238);
+			this->panel3->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
 			this->panel3->Name = L"panel3";
-			this->panel3->Size = System::Drawing::Size(347, 135);
+			this->panel3->Size = System::Drawing::Size(462, 166);
 			this->panel3->TabIndex = 3;
 			// 
 			// label30
@@ -850,9 +880,10 @@ namespace CLRNET {
 			this->label30->AutoSize = true;
 			this->label30->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label30->Location = System::Drawing::Point(106, 94);
+			this->label30->Location = System::Drawing::Point(141, 116);
+			this->label30->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label30->Name = L"label30";
-			this->label30->Size = System::Drawing::Size(51, 16);
+			this->label30->Size = System::Drawing::Size(62, 20);
 			this->label30->TabIndex = 6;
 			this->label30->Text = L"label30";
 			// 
@@ -861,9 +892,10 @@ namespace CLRNET {
 			this->label29->AutoSize = true;
 			this->label29->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label29->Location = System::Drawing::Point(106, 64);
+			this->label29->Location = System::Drawing::Point(141, 79);
+			this->label29->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label29->Name = L"label29";
-			this->label29->Size = System::Drawing::Size(51, 16);
+			this->label29->Size = System::Drawing::Size(62, 20);
 			this->label29->TabIndex = 5;
 			this->label29->Text = L"label29";
 			// 
@@ -872,9 +904,10 @@ namespace CLRNET {
 			this->label28->AutoSize = true;
 			this->label28->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label28->Location = System::Drawing::Point(282, 81);
+			this->label28->Location = System::Drawing::Point(376, 100);
+			this->label28->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label28->Name = L"label28";
-			this->label28->Size = System::Drawing::Size(51, 16);
+			this->label28->Size = System::Drawing::Size(62, 20);
 			this->label28->TabIndex = 4;
 			this->label28->Text = L"label28";
 			// 
@@ -883,9 +916,10 @@ namespace CLRNET {
 			this->label10->AutoSize = true;
 			this->label10->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label10->Location = System::Drawing::Point(183, 81);
+			this->label10->Location = System::Drawing::Point(244, 100);
+			this->label10->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label10->Name = L"label10";
-			this->label10->Size = System::Drawing::Size(60, 16);
+			this->label10->Size = System::Drawing::Size(77, 20);
 			this->label10->TabIndex = 3;
 			this->label10->Text = L"Direction";
 			// 
@@ -894,9 +928,10 @@ namespace CLRNET {
 			this->label9->AutoSize = true;
 			this->label9->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label9->Location = System::Drawing::Point(22, 94);
+			this->label9->Location = System::Drawing::Point(29, 116);
+			this->label9->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label9->Name = L"label9";
-			this->label9->Size = System::Drawing::Size(41, 16);
+			this->label9->Size = System::Drawing::Size(54, 20);
 			this->label9->TabIndex = 2;
 			this->label9->Text = L"Gusts";
 			// 
@@ -905,9 +940,10 @@ namespace CLRNET {
 			this->label8->AutoSize = true;
 			this->label8->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label8->Location = System::Drawing::Point(22, 66);
+			this->label8->Location = System::Drawing::Point(29, 81);
+			this->label8->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label8->Name = L"label8";
-			this->label8->Size = System::Drawing::Size(48, 16);
+			this->label8->Size = System::Drawing::Size(56, 20);
 			this->label8->TabIndex = 1;
 			this->label8->Text = L"Speed";
 			// 
@@ -916,9 +952,10 @@ namespace CLRNET {
 			this->label7->AutoSize = true;
 			this->label7->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Underline, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label7->Location = System::Drawing::Point(146, 19);
+			this->label7->Location = System::Drawing::Point(195, 23);
+			this->label7->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label7->Name = L"label7";
-			this->label7->Size = System::Drawing::Size(45, 20);
+			this->label7->Size = System::Drawing::Size(58, 25);
 			this->label7->TabIndex = 0;
 			this->label7->Text = L"Wind";
 			// 
@@ -932,9 +969,10 @@ namespace CLRNET {
 			this->panel2->Controls->Add(this->label6);
 			this->panel2->Controls->Add(this->label5);
 			this->panel2->Controls->Add(this->label4);
-			this->panel2->Location = System::Drawing::Point(635, 43);
+			this->panel2->Location = System::Drawing::Point(847, 53);
+			this->panel2->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
 			this->panel2->Name = L"panel2";
-			this->panel2->Size = System::Drawing::Size(347, 144);
+			this->panel2->Size = System::Drawing::Size(462, 177);
 			this->panel2->TabIndex = 2;
 			// 
 			// label27
@@ -942,9 +980,10 @@ namespace CLRNET {
 			this->label27->AutoSize = true;
 			this->label27->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label27->Location = System::Drawing::Point(282, 97);
+			this->label27->Location = System::Drawing::Point(376, 119);
+			this->label27->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label27->Name = L"label27";
-			this->label27->Size = System::Drawing::Size(51, 16);
+			this->label27->Size = System::Drawing::Size(62, 20);
 			this->label27->TabIndex = 7;
 			this->label27->Text = L"label27";
 			// 
@@ -953,9 +992,10 @@ namespace CLRNET {
 			this->label26->AutoSize = true;
 			this->label26->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label26->Location = System::Drawing::Point(147, 97);
+			this->label26->Location = System::Drawing::Point(196, 119);
+			this->label26->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label26->Name = L"label26";
-			this->label26->Size = System::Drawing::Size(51, 16);
+			this->label26->Size = System::Drawing::Size(62, 20);
 			this->label26->TabIndex = 6;
 			this->label26->Text = L"label26";
 			// 
@@ -964,9 +1004,10 @@ namespace CLRNET {
 			this->label25->AutoSize = true;
 			this->label25->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label25->Location = System::Drawing::Point(12, 97);
+			this->label25->Location = System::Drawing::Point(16, 119);
+			this->label25->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label25->Name = L"label25";
-			this->label25->Size = System::Drawing::Size(51, 16);
+			this->label25->Size = System::Drawing::Size(62, 20);
 			this->label25->TabIndex = 5;
 			this->label25->Text = L"label25";
 			// 
@@ -975,9 +1016,10 @@ namespace CLRNET {
 			this->label11->AutoSize = true;
 			this->label11->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label11->Location = System::Drawing::Point(147, 56);
+			this->label11->Location = System::Drawing::Point(196, 69);
+			this->label11->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label11->Name = L"label11";
-			this->label11->Size = System::Drawing::Size(57, 16);
+			this->label11->Size = System::Drawing::Size(73, 20);
 			this->label11->TabIndex = 4;
 			this->label11->Text = L"Duration";
 			// 
@@ -986,9 +1028,10 @@ namespace CLRNET {
 			this->label6->AutoSize = true;
 			this->label6->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label6->Location = System::Drawing::Point(282, 56);
+			this->label6->Location = System::Drawing::Point(376, 69);
+			this->label6->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label6->Name = L"label6";
-			this->label6->Size = System::Drawing::Size(48, 16);
+			this->label6->Size = System::Drawing::Size(61, 20);
 			this->label6->TabIndex = 3;
 			this->label6->Text = L"Sunset";
 			// 
@@ -997,9 +1040,10 @@ namespace CLRNET {
 			this->label5->AutoSize = true;
 			this->label5->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label5->Location = System::Drawing::Point(11, 56);
+			this->label5->Location = System::Drawing::Point(15, 69);
+			this->label5->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label5->Name = L"label5";
-			this->label5->Size = System::Drawing::Size(52, 16);
+			this->label5->Size = System::Drawing::Size(66, 20);
 			this->label5->TabIndex = 2;
 			this->label5->Text = L"Sunrise";
 			// 
@@ -1008,9 +1052,10 @@ namespace CLRNET {
 			this->label4->AutoSize = true;
 			this->label4->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Underline, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label4->Location = System::Drawing::Point(112, 17);
+			this->label4->Location = System::Drawing::Point(149, 21);
+			this->label4->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label4->Name = L"label4";
-			this->label4->Size = System::Drawing::Size(149, 20);
+			this->label4->Size = System::Drawing::Size(184, 25);
 			this->label4->TabIndex = 1;
 			this->label4->Text = L"Sunrise and Sunset";
 			// 
@@ -1022,61 +1067,64 @@ namespace CLRNET {
 			this->lblSummaryHeading->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
 			this->lblSummaryHeading->Location = System::Drawing::Point(0, 0);
+			this->lblSummaryHeading->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->lblSummaryHeading->Name = L"lblSummaryHeading";
-			this->lblSummaryHeading->Size = System::Drawing::Size(169, 26);
+			this->lblSummaryHeading->Size = System::Drawing::Size(210, 31);
 			this->lblSummaryHeading->TabIndex = 0;
 			this->lblSummaryHeading->Text = L"Today\'s Weather";
 			// 
 			// menuStrip1
 			// 
+			this->menuStrip1->ImageScalingSize = System::Drawing::Size(20, 20);
 			this->menuStrip1->Items->AddRange(gcnew cli::array< System::Windows::Forms::ToolStripItem^  >(5) {
 				this->summaryToolStripMenuItem,
 					this->tempToolStripMenuItem, this->windToolStripMenuItem, this->precipitationToolStripMenuItem, this->visibilityToolStripMenuItem
 			});
 			this->menuStrip1->Location = System::Drawing::Point(0, 0);
 			this->menuStrip1->Name = L"menuStrip1";
-			this->menuStrip1->Size = System::Drawing::Size(997, 24);
+			this->menuStrip1->Size = System::Drawing::Size(1327, 28);
 			this->menuStrip1->TabIndex = 8;
 			this->menuStrip1->Text = L"menuStrip1";
 			// 
 			// summaryToolStripMenuItem
 			// 
 			this->summaryToolStripMenuItem->Name = L"summaryToolStripMenuItem";
-			this->summaryToolStripMenuItem->Size = System::Drawing::Size(70, 20);
+			this->summaryToolStripMenuItem->Size = System::Drawing::Size(85, 24);
 			this->summaryToolStripMenuItem->Text = L"Summary";
 			this->summaryToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::summaryToolStripMenuItem_Click);
 			// 
 			// tempToolStripMenuItem
 			// 
 			this->tempToolStripMenuItem->Name = L"tempToolStripMenuItem";
-			this->tempToolStripMenuItem->Size = System::Drawing::Size(85, 20);
+			this->tempToolStripMenuItem->Size = System::Drawing::Size(107, 24);
 			this->tempToolStripMenuItem->Text = L"Temperature";
 			this->tempToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::tempToolStripMenuItem_Click);
 			// 
 			// windToolStripMenuItem
 			// 
 			this->windToolStripMenuItem->Name = L"windToolStripMenuItem";
-			this->windToolStripMenuItem->Size = System::Drawing::Size(47, 20);
+			this->windToolStripMenuItem->Size = System::Drawing::Size(58, 24);
 			this->windToolStripMenuItem->Text = L"Wind";
 			this->windToolStripMenuItem->Click += gcnew System::EventHandler(this, &MyForm::windToolStripMenuItem_Click);
 			// 
 			// precipitationToolStripMenuItem
 			// 
 			this->precipitationToolStripMenuItem->Name = L"precipitationToolStripMenuItem";
-			this->precipitationToolStripMenuItem->Size = System::Drawing::Size(86, 20);
+			this->precipitationToolStripMenuItem->Size = System::Drawing::Size(107, 24);
 			this->precipitationToolStripMenuItem->Text = L"Precipitation";
 			// 
 			// visibilityToolStripMenuItem
 			// 
 			this->visibilityToolStripMenuItem->Name = L"visibilityToolStripMenuItem";
-			this->visibilityToolStripMenuItem->Size = System::Drawing::Size(63, 20);
+			this->visibilityToolStripMenuItem->Size = System::Drawing::Size(79, 24);
 			this->visibilityToolStripMenuItem->Text = L"Visibility";
 			// 
 			// textBox2
 			// 
-			this->textBox2->Location = System::Drawing::Point(799, 4);
+			this->textBox2->Location = System::Drawing::Point(1065, 5);
+			this->textBox2->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
 			this->textBox2->Name = L"textBox2";
-			this->textBox2->Size = System::Drawing::Size(100, 20);
+			this->textBox2->Size = System::Drawing::Size(132, 22);
 			this->textBox2->TabIndex = 9;
 			this->textBox2->KeyPress += gcnew System::Windows::Forms::KeyPressEventHandler(this, &MyForm::textBox2_KeyPress);
 			// 
@@ -1084,9 +1132,10 @@ namespace CLRNET {
 			// 
 			this->label35->AutoSize = true;
 			this->label35->BackColor = System::Drawing::SystemColors::Control;
-			this->label35->Location = System::Drawing::Point(675, 7);
+			this->label35->Location = System::Drawing::Point(900, 9);
+			this->label35->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label35->Name = L"label35";
-			this->label35->Size = System::Drawing::Size(118, 13);
+			this->label35->Size = System::Drawing::Size(149, 16);
 			this->label35->TabIndex = 10;
 			this->label35->Text = L"Please Enter City Name";
 			// 
@@ -1094,9 +1143,10 @@ namespace CLRNET {
 			// 
 			this->label2->AutoSize = true;
 			this->label2->BackColor = System::Drawing::SystemColors::Control;
-			this->label2->Location = System::Drawing::Point(905, 7);
+			this->label2->Location = System::Drawing::Point(1207, 9);
+			this->label2->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(35, 13);
+			this->label2->Size = System::Drawing::Size(44, 16);
 			this->label2->TabIndex = 11;
 			this->label2->Text = L"label2";
 			// 
@@ -1106,9 +1156,10 @@ namespace CLRNET {
 			this->label3->BackColor = System::Drawing::SystemColors::Control;
 			this->label3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 5.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label3->Location = System::Drawing::Point(973, 0);
+			this->label3->Location = System::Drawing::Point(1297, 0);
+			this->label3->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label3->Name = L"label3";
-			this->label3->Size = System::Drawing::Size(0, 7);
+			this->label3->Size = System::Drawing::Size(0, 12);
 			this->label3->TabIndex = 13;
 			// 
 			// label36
@@ -1116,17 +1167,18 @@ namespace CLRNET {
 			this->label36->AutoSize = true;
 			this->label36->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, static_cast<System::Drawing::FontStyle>((System::Drawing::FontStyle::Bold | System::Drawing::FontStyle::Underline)),
 				System::Drawing::GraphicsUnit::Point, static_cast<System::Byte>(0)));
-			this->label36->Location = System::Drawing::Point(411, 240);
+			this->label36->Location = System::Drawing::Point(548, 295);
+			this->label36->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
 			this->label36->Name = L"label36";
-			this->label36->Size = System::Drawing::Size(0, 16);
+			this->label36->Size = System::Drawing::Size(0, 20);
 			this->label36->TabIndex = 14;
 			// 
 			// MyForm
 			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
+			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::SystemColors::GradientActiveCaption;
-			this->ClientSize = System::Drawing::Size(997, 597);
+			this->ClientSize = System::Drawing::Size(1327, 725);
 			this->Controls->Add(this->label36);
 			this->Controls->Add(this->label3);
 			this->Controls->Add(this->label2);
@@ -1137,8 +1189,9 @@ namespace CLRNET {
 			this->Controls->Add(this->label1);
 			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->MainMenuStrip = this->menuStrip1;
-			this->MaximumSize = System::Drawing::Size(1013, 636);
-			this->MinimumSize = System::Drawing::Size(1013, 636);
+			this->Margin = System::Windows::Forms::Padding(4, 4, 4, 4);
+			this->MaximumSize = System::Drawing::Size(1345, 772);
+			this->MinimumSize = System::Drawing::Size(1345, 772);
 			this->Name = L"MyForm";
 			this->Text = L"Luke\'s Weather";
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
