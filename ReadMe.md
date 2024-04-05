@@ -1,6 +1,17 @@
-# Setting up vcpkg for C++ Project
+# Pure C++ Desktop Weather App
 
-To integrate vcpkg into your C++ project, follow these steps:
+## Running C++ project in Microsoft Visual Studio Code
+
+ 1. Clone the repository to your local machine.
+ 2. Open the project folder in Visual Studio Code.
+ 3. Install the necessary dependancies using vcpkg
+ 4. Follow [steps](##Setting-up-vcpkg-for-C++-Project) below to link vcpkg and MS visual Studio Code
+ 5. Change Solution Configuration to Release and Solution Platform to x64
+ 6. Press F5 to run the project
+
+## Setting up vcpkg for C++ Project
+
+To integrate [vcpkg](https://vcpkg.io/en/) into your C++ project, follow these steps:
 
 1. **Clone vcpkg Repository**:
    - Navigate to `C:/Program Files`.
@@ -41,3 +52,4 @@ To integrate vcpkg into your C++ project, follow these steps:
    - Replace `[package]` with the name of the package you want to install.
 
 By following these steps, you can integrate vcpkg into your C++ project and easily manage external dependencies.
+ > [Youtube video explanation](https://www.youtube.com/watch?v=0h1lC3QHLHU)
